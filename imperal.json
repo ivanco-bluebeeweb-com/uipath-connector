@@ -1,0 +1,3231 @@
+{
+  "manifest_schema_version": 3,
+  "sdk_version": "5.9.22",
+  "app_id": "uipath-connector",
+  "version": "0.1.0",
+  "name": "UiPath",
+  "description": "Connect your own UiPath Orchestrator (Automation Cloud or standalone) to see and manage your processes, jobs, queues, robots, and assets from Imperal -- list processes and start/stop jobs against them, manage transaction queues and their items, browse connected robots, and read/set shared assets. Uses your own UiPath External Application (OAuth2 client credentials) -- nothing is hosted or proxied by Imperal beyond the request itself. Note: this manages processes/jobs/queues/robots/assets only; Studio (the visual designer), Insights analytics, and Automation Hub/Action Center human-in-the-loop tasks are out of scope.",
+  "icon": "icon.svg",
+  "actions_explicit": true,
+  "system": false,
+  "capabilities": [
+    "uipath:read",
+    "uipath:write"
+  ],
+  "tools": [
+    {
+      "name": "connect_uipath",
+      "description": "Connect a UiPath Automation Cloud organization/tenant by saving your own External Application's client_id/client_secret plus the organization name, tenant name, and a default Orchestrator Folder id, after checking the credentials actually work. You'll need: an External Application (Automation Cloud > Admin > External Applications > create a Confidential Application) granted the OR.* scopes you want to use (e.g. OR.Jobs, OR.Queues, OR.Robots, OR.Assets).",
+      "action_type": "write",
+      "chain_callable": true,
+      "effects": [
+        "uipath.provider.connected"
+      ],
+      "id_projection": "",
+      "params_schema": {
+        "properties": {
+          "client_id": {
+            "default": "",
+            "description": "Client ID of the UiPath External Application created for this connection.",
+            "title": "Client Id",
+            "type": "string"
+          },
+          "client_secret": {
+            "default": "",
+            "description": "Client secret (or App Secret) of the UiPath External Application.",
+            "title": "Client Secret",
+            "type": "string"
+          },
+          "organization_name": {
+            "default": "",
+            "description": "Your UiPath Automation Cloud organization's logical name (from the account URL).",
+            "title": "Organization Name",
+            "type": "string"
+          },
+          "tenant_name": {
+            "default": "",
+            "description": "The tenant's logical name within the organization.",
+            "title": "Tenant Name",
+            "type": "string"
+          },
+          "default_folder_id": {
+            "default": "",
+            "description": "Default Orchestrator Folder ID to operate in (most calls are folder-scoped). Found in Orchestrator > Folder settings.",
+            "title": "Default Folder Id",
+            "type": "string"
+          },
+          "label": {
+            "default": "",
+            "description": "Optional friendly name for this organization/tenant connection.",
+            "title": "Label",
+            "type": "string"
+          }
+        },
+        "title": "ConnectUipathParams",
+        "type": "object"
+      },
+      "return_schema": {
+        "properties": {
+          "id": {
+            "default": "",
+            "title": "Id",
+            "type": "string"
+          },
+          "title": {
+            "default": "",
+            "title": "Title",
+            "type": "string"
+          },
+          "kind": {
+            "default": "",
+            "title": "Kind",
+            "type": "string"
+          },
+          "subtitle": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Subtitle"
+          },
+          "description": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Description"
+          },
+          "status": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Status"
+          },
+          "url": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Url"
+          },
+          "connected": {
+            "default": false,
+            "title": "Connected",
+            "type": "boolean"
+          },
+          "detail": {
+            "default": "",
+            "title": "Detail",
+            "type": "string"
+          },
+          "organization_name": {
+            "default": "",
+            "title": "Organization Name",
+            "type": "string"
+          },
+          "tenant_name": {
+            "default": "",
+            "title": "Tenant Name",
+            "type": "string"
+          },
+          "default_folder_id": {
+            "default": "",
+            "title": "Default Folder Id",
+            "type": "string"
+          }
+        },
+        "title": "ProviderConnection",
+        "type": "object",
+        "x-sdl": "entity"
+      },
+      "event": "uipath-connector.connect_uipath",
+      "background": false,
+      "long_running": false,
+      "scopes": [],
+      "owner_chat_tool": "uipath"
+    },
+    {
+      "name": "list_connections",
+      "description": "List the connected UiPath Automation Cloud organizations/tenants.",
+      "action_type": "read",
+      "chain_callable": true,
+      "effects": [],
+      "id_projection": "",
+      "params_schema": {
+        "description": "Explicit empty params model -- V17 disallows untyped handlers.",
+        "properties": {},
+        "title": "NoParams",
+        "type": "object"
+      },
+      "return_schema": {
+        "$defs": {
+          "ProviderConnection": {
+            "properties": {
+              "id": {
+                "default": "",
+                "title": "Id",
+                "type": "string"
+              },
+              "title": {
+                "default": "",
+                "title": "Title",
+                "type": "string"
+              },
+              "kind": {
+                "default": "",
+                "title": "Kind",
+                "type": "string"
+              },
+              "subtitle": {
+                "anyOf": [
+                  {
+                    "type": "string"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ],
+                "default": null,
+                "title": "Subtitle"
+              },
+              "description": {
+                "anyOf": [
+                  {
+                    "type": "string"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ],
+                "default": null,
+                "title": "Description"
+              },
+              "status": {
+                "anyOf": [
+                  {
+                    "type": "string"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ],
+                "default": null,
+                "title": "Status"
+              },
+              "url": {
+                "anyOf": [
+                  {
+                    "type": "string"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ],
+                "default": null,
+                "title": "Url"
+              },
+              "connected": {
+                "default": false,
+                "title": "Connected",
+                "type": "boolean"
+              },
+              "detail": {
+                "default": "",
+                "title": "Detail",
+                "type": "string"
+              },
+              "organization_name": {
+                "default": "",
+                "title": "Organization Name",
+                "type": "string"
+              },
+              "tenant_name": {
+                "default": "",
+                "title": "Tenant Name",
+                "type": "string"
+              },
+              "default_folder_id": {
+                "default": "",
+                "title": "Default Folder Id",
+                "type": "string"
+              }
+            },
+            "title": "ProviderConnection",
+            "type": "object",
+            "x-sdl": "entity"
+          }
+        },
+        "properties": {
+          "id": {
+            "default": "provider_connection_list",
+            "title": "Id",
+            "type": "string"
+          },
+          "title": {
+            "default": "",
+            "title": "Title",
+            "type": "string"
+          },
+          "kind": {
+            "default": "",
+            "title": "Kind",
+            "type": "string"
+          },
+          "subtitle": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Subtitle"
+          },
+          "description": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Description"
+          },
+          "status": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Status"
+          },
+          "url": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Url"
+          },
+          "items": {
+            "items": {
+              "$ref": "#/$defs/ProviderConnection"
+            },
+            "title": "Items",
+            "type": "array"
+          }
+        },
+        "title": "ProviderConnectionList",
+        "type": "object",
+        "x-sdl": "entity"
+      },
+      "event": "uipath-connector.list_connections",
+      "background": false,
+      "long_running": false,
+      "scopes": [],
+      "owner_chat_tool": "uipath"
+    },
+    {
+      "name": "disconnect_uipath",
+      "description": "Disconnect one UiPath organization/tenant. Nothing in Automation Cloud is changed; the saved External Application credentials are deleted here.",
+      "action_type": "write",
+      "chain_callable": true,
+      "effects": [
+        "uipath.provider.disconnected"
+      ],
+      "id_projection": "",
+      "params_schema": {
+        "properties": {
+          "connection_id": {
+            "description": "Connection id to disconnect, from list_connections.",
+            "title": "Connection Id",
+            "type": "string"
+          }
+        },
+        "required": [
+          "connection_id"
+        ],
+        "title": "DisconnectUipathParams",
+        "type": "object"
+      },
+      "return_schema": {
+        "properties": {
+          "id": {
+            "default": "",
+            "title": "Id",
+            "type": "string"
+          },
+          "title": {
+            "default": "",
+            "title": "Title",
+            "type": "string"
+          },
+          "kind": {
+            "default": "",
+            "title": "Kind",
+            "type": "string"
+          },
+          "subtitle": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Subtitle"
+          },
+          "description": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Description"
+          },
+          "status": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Status"
+          },
+          "url": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Url"
+          },
+          "ok": {
+            "default": true,
+            "title": "Ok",
+            "type": "boolean"
+          }
+        },
+        "title": "DeleteResult",
+        "type": "object",
+        "x-sdl": "entity"
+      },
+      "event": "uipath-connector.disconnect_uipath",
+      "background": false,
+      "long_running": false,
+      "scopes": [],
+      "owner_chat_tool": "uipath"
+    },
+    {
+      "name": "list_processes",
+      "description": "List processes (Orchestrator Releases) available in a Folder.",
+      "action_type": "read",
+      "chain_callable": true,
+      "effects": [],
+      "id_projection": "",
+      "params_schema": {
+        "properties": {
+          "connection_id": {
+            "default": "",
+            "description": "Which connected organization to use. Omit if only one is connected.",
+            "title": "Connection Id",
+            "type": "string"
+          },
+          "folder_id": {
+            "default": "",
+            "description": "Orchestrator Folder ID to look in. Omit to use the connection's default folder.",
+            "title": "Folder Id",
+            "type": "string"
+          },
+          "search": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "description": "Optional process name substring filter.",
+            "title": "Search"
+          }
+        },
+        "title": "ListProcessesParams",
+        "type": "object"
+      },
+      "return_schema": {
+        "$defs": {
+          "OrchestratorProcess": {
+            "properties": {
+              "id": {
+                "default": "",
+                "title": "Id",
+                "type": "string"
+              },
+              "title": {
+                "default": "",
+                "title": "Title",
+                "type": "string"
+              },
+              "kind": {
+                "default": "",
+                "title": "Kind",
+                "type": "string"
+              },
+              "subtitle": {
+                "anyOf": [
+                  {
+                    "type": "string"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ],
+                "default": null,
+                "title": "Subtitle"
+              },
+              "description": {
+                "default": "",
+                "title": "Description",
+                "type": "string"
+              },
+              "status": {
+                "anyOf": [
+                  {
+                    "type": "string"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ],
+                "default": null,
+                "title": "Status"
+              },
+              "url": {
+                "anyOf": [
+                  {
+                    "type": "string"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ],
+                "default": null,
+                "title": "Url"
+              },
+              "key": {
+                "default": "",
+                "title": "Key",
+                "type": "string"
+              },
+              "version": {
+                "default": "",
+                "title": "Version",
+                "type": "string"
+              },
+              "process_key": {
+                "default": "",
+                "title": "Process Key",
+                "type": "string"
+              }
+            },
+            "title": "OrchestratorProcess",
+            "type": "object",
+            "x-sdl": "entity"
+          }
+        },
+        "properties": {
+          "id": {
+            "default": "orchestrator_process_list",
+            "title": "Id",
+            "type": "string"
+          },
+          "title": {
+            "default": "",
+            "title": "Title",
+            "type": "string"
+          },
+          "kind": {
+            "default": "",
+            "title": "Kind",
+            "type": "string"
+          },
+          "subtitle": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Subtitle"
+          },
+          "description": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Description"
+          },
+          "status": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Status"
+          },
+          "url": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Url"
+          },
+          "items": {
+            "items": {
+              "$ref": "#/$defs/OrchestratorProcess"
+            },
+            "title": "Items",
+            "type": "array"
+          }
+        },
+        "title": "OrchestratorProcessList",
+        "type": "object",
+        "x-sdl": "entity"
+      },
+      "event": "uipath-connector.list_processes",
+      "background": false,
+      "long_running": false,
+      "scopes": [],
+      "owner_chat_tool": "uipath"
+    },
+    {
+      "name": "get_process",
+      "description": "Read one process (Release) in full.",
+      "action_type": "read",
+      "chain_callable": true,
+      "effects": [],
+      "id_projection": "",
+      "params_schema": {
+        "properties": {
+          "connection_id": {
+            "default": "",
+            "description": "Which connected organization to use. Omit if only one is connected.",
+            "title": "Connection Id",
+            "type": "string"
+          },
+          "folder_id": {
+            "default": "",
+            "description": "Orchestrator Folder ID. Omit to use the connection's default folder.",
+            "title": "Folder Id",
+            "type": "string"
+          },
+          "process_id": {
+            "description": "Process (release) id, from list_processes.",
+            "title": "Process Id",
+            "type": "string"
+          }
+        },
+        "required": [
+          "process_id"
+        ],
+        "title": "GetProcessParams",
+        "type": "object"
+      },
+      "return_schema": {
+        "properties": {
+          "id": {
+            "default": "",
+            "title": "Id",
+            "type": "string"
+          },
+          "title": {
+            "default": "",
+            "title": "Title",
+            "type": "string"
+          },
+          "kind": {
+            "default": "",
+            "title": "Kind",
+            "type": "string"
+          },
+          "subtitle": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Subtitle"
+          },
+          "description": {
+            "default": "",
+            "title": "Description",
+            "type": "string"
+          },
+          "status": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Status"
+          },
+          "url": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Url"
+          },
+          "key": {
+            "default": "",
+            "title": "Key",
+            "type": "string"
+          },
+          "version": {
+            "default": "",
+            "title": "Version",
+            "type": "string"
+          },
+          "process_key": {
+            "default": "",
+            "title": "Process Key",
+            "type": "string"
+          }
+        },
+        "title": "OrchestratorProcess",
+        "type": "object",
+        "x-sdl": "entity"
+      },
+      "event": "uipath-connector.get_process",
+      "background": false,
+      "long_running": false,
+      "scopes": [],
+      "owner_chat_tool": "uipath"
+    },
+    {
+      "name": "list_jobs",
+      "description": "List recent jobs (process runs) in a Folder, most recent first.",
+      "action_type": "read",
+      "chain_callable": true,
+      "effects": [],
+      "id_projection": "",
+      "params_schema": {
+        "properties": {
+          "connection_id": {
+            "default": "",
+            "description": "Which connected organization to use. Omit if only one is connected.",
+            "title": "Connection Id",
+            "type": "string"
+          },
+          "folder_id": {
+            "default": "",
+            "description": "Orchestrator Folder ID. Omit to use the connection's default folder.",
+            "title": "Folder Id",
+            "type": "string"
+          },
+          "state": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "description": "Optional job state filter, e.g. 'Running', 'Successful', 'Faulted'.",
+            "title": "State"
+          }
+        },
+        "title": "ListJobsParams",
+        "type": "object"
+      },
+      "return_schema": {
+        "$defs": {
+          "OrchestratorJob": {
+            "properties": {
+              "id": {
+                "default": "",
+                "title": "Id",
+                "type": "string"
+              },
+              "title": {
+                "default": "",
+                "title": "Title",
+                "type": "string"
+              },
+              "kind": {
+                "default": "",
+                "title": "Kind",
+                "type": "string"
+              },
+              "subtitle": {
+                "anyOf": [
+                  {
+                    "type": "string"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ],
+                "default": null,
+                "title": "Subtitle"
+              },
+              "description": {
+                "anyOf": [
+                  {
+                    "type": "string"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ],
+                "default": null,
+                "title": "Description"
+              },
+              "status": {
+                "anyOf": [
+                  {
+                    "type": "string"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ],
+                "default": null,
+                "title": "Status"
+              },
+              "url": {
+                "anyOf": [
+                  {
+                    "type": "string"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ],
+                "default": null,
+                "title": "Url"
+              },
+              "state": {
+                "default": "",
+                "title": "State",
+                "type": "string"
+              },
+              "process_key": {
+                "default": "",
+                "title": "Process Key",
+                "type": "string"
+              },
+              "robot_name": {
+                "default": "",
+                "title": "Robot Name",
+                "type": "string"
+              },
+              "start_time": {
+                "default": "",
+                "title": "Start Time",
+                "type": "string"
+              },
+              "end_time": {
+                "default": "",
+                "title": "End Time",
+                "type": "string"
+              },
+              "info": {
+                "default": "",
+                "title": "Info",
+                "type": "string"
+              }
+            },
+            "title": "OrchestratorJob",
+            "type": "object",
+            "x-sdl": "entity"
+          }
+        },
+        "properties": {
+          "id": {
+            "default": "orchestrator_job_list",
+            "title": "Id",
+            "type": "string"
+          },
+          "title": {
+            "default": "",
+            "title": "Title",
+            "type": "string"
+          },
+          "kind": {
+            "default": "",
+            "title": "Kind",
+            "type": "string"
+          },
+          "subtitle": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Subtitle"
+          },
+          "description": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Description"
+          },
+          "status": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Status"
+          },
+          "url": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Url"
+          },
+          "items": {
+            "items": {
+              "$ref": "#/$defs/OrchestratorJob"
+            },
+            "title": "Items",
+            "type": "array"
+          }
+        },
+        "title": "OrchestratorJobList",
+        "type": "object",
+        "x-sdl": "entity"
+      },
+      "event": "uipath-connector.list_jobs",
+      "background": false,
+      "long_running": false,
+      "scopes": [],
+      "owner_chat_tool": "uipath"
+    },
+    {
+      "name": "get_job",
+      "description": "Read one job in full -- state, robot, timing, and any error info.",
+      "action_type": "read",
+      "chain_callable": true,
+      "effects": [],
+      "id_projection": "",
+      "params_schema": {
+        "properties": {
+          "connection_id": {
+            "default": "",
+            "description": "Which connected organization to use. Omit if only one is connected.",
+            "title": "Connection Id",
+            "type": "string"
+          },
+          "folder_id": {
+            "default": "",
+            "description": "Orchestrator Folder ID. Omit to use the connection's default folder.",
+            "title": "Folder Id",
+            "type": "string"
+          },
+          "job_id": {
+            "description": "Job id, from list_jobs.",
+            "title": "Job Id",
+            "type": "string"
+          }
+        },
+        "required": [
+          "job_id"
+        ],
+        "title": "GetJobParams",
+        "type": "object"
+      },
+      "return_schema": {
+        "properties": {
+          "id": {
+            "default": "",
+            "title": "Id",
+            "type": "string"
+          },
+          "title": {
+            "default": "",
+            "title": "Title",
+            "type": "string"
+          },
+          "kind": {
+            "default": "",
+            "title": "Kind",
+            "type": "string"
+          },
+          "subtitle": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Subtitle"
+          },
+          "description": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Description"
+          },
+          "status": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Status"
+          },
+          "url": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Url"
+          },
+          "state": {
+            "default": "",
+            "title": "State",
+            "type": "string"
+          },
+          "process_key": {
+            "default": "",
+            "title": "Process Key",
+            "type": "string"
+          },
+          "robot_name": {
+            "default": "",
+            "title": "Robot Name",
+            "type": "string"
+          },
+          "start_time": {
+            "default": "",
+            "title": "Start Time",
+            "type": "string"
+          },
+          "end_time": {
+            "default": "",
+            "title": "End Time",
+            "type": "string"
+          },
+          "info": {
+            "default": "",
+            "title": "Info",
+            "type": "string"
+          }
+        },
+        "title": "OrchestratorJob",
+        "type": "object",
+        "x-sdl": "entity"
+      },
+      "event": "uipath-connector.get_job",
+      "background": false,
+      "long_running": false,
+      "scopes": [],
+      "owner_chat_tool": "uipath"
+    },
+    {
+      "name": "start_job",
+      "description": "Start a job: run a process (by its Release key) now, either on explicit robots or letting Orchestrator pick any available robot.",
+      "action_type": "write",
+      "chain_callable": true,
+      "effects": [
+        "uipath.job.started"
+      ],
+      "id_projection": "",
+      "params_schema": {
+        "properties": {
+          "connection_id": {
+            "default": "",
+            "description": "Which connected organization to use. Omit if only one is connected.",
+            "title": "Connection Id",
+            "type": "string"
+          },
+          "folder_id": {
+            "default": "",
+            "description": "Orchestrator Folder ID. Omit to use the connection's default folder.",
+            "title": "Folder Id",
+            "type": "string"
+          },
+          "process_key": {
+            "description": "Process (release) key to start a job for, from list_processes.",
+            "title": "Process Key",
+            "type": "string"
+          },
+          "robot_ids": {
+            "anyOf": [
+              {
+                "items": {
+                  "type": "string"
+                },
+                "type": "array"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "description": "Explicit robot ids to run on. Omit to let Orchestrator pick any available robot in the folder (JobsCount strategy).",
+            "title": "Robot Ids"
+          },
+          "jobs_count": {
+            "default": 1,
+            "description": "How many job instances to start when robot_ids is omitted.",
+            "maximum": 50,
+            "minimum": 1,
+            "title": "Jobs Count",
+            "type": "integer"
+          },
+          "input_arguments": {
+            "anyOf": [
+              {
+                "additionalProperties": true,
+                "type": "object"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "description": "Input arguments to pass to the process, as key/value pairs.",
+            "title": "Input Arguments"
+          }
+        },
+        "required": [
+          "process_key"
+        ],
+        "title": "StartJobParams",
+        "type": "object"
+      },
+      "return_schema": {
+        "properties": {
+          "id": {
+            "default": "",
+            "title": "Id",
+            "type": "string"
+          },
+          "title": {
+            "default": "",
+            "title": "Title",
+            "type": "string"
+          },
+          "kind": {
+            "default": "",
+            "title": "Kind",
+            "type": "string"
+          },
+          "subtitle": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Subtitle"
+          },
+          "description": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Description"
+          },
+          "status": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Status"
+          },
+          "url": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Url"
+          },
+          "ok": {
+            "default": true,
+            "title": "Ok",
+            "type": "boolean"
+          },
+          "detail": {
+            "default": "",
+            "title": "Detail",
+            "type": "string"
+          }
+        },
+        "title": "JobActionResult",
+        "type": "object",
+        "x-sdl": "entity"
+      },
+      "event": "uipath-connector.start_job",
+      "background": false,
+      "long_running": false,
+      "scopes": [],
+      "owner_chat_tool": "uipath"
+    },
+    {
+      "name": "stop_job",
+      "description": "Stop a running job: 'Kill' for immediate termination, or 'SoftStop' to let the current transaction finish first.",
+      "action_type": "write",
+      "chain_callable": true,
+      "effects": [
+        "uipath.job.stopped"
+      ],
+      "id_projection": "",
+      "params_schema": {
+        "properties": {
+          "connection_id": {
+            "default": "",
+            "description": "Which connected organization to use. Omit if only one is connected.",
+            "title": "Connection Id",
+            "type": "string"
+          },
+          "folder_id": {
+            "default": "",
+            "description": "Orchestrator Folder ID. Omit to use the connection's default folder.",
+            "title": "Folder Id",
+            "type": "string"
+          },
+          "job_id": {
+            "description": "Job id to stop, from list_jobs.",
+            "title": "Job Id",
+            "type": "string"
+          },
+          "strategy": {
+            "default": "Kill",
+            "description": "'Kill' (immediate) or 'SoftStop' (finish current transaction first).",
+            "title": "Strategy",
+            "type": "string"
+          }
+        },
+        "required": [
+          "job_id"
+        ],
+        "title": "StopJobParams",
+        "type": "object"
+      },
+      "return_schema": {
+        "properties": {
+          "id": {
+            "default": "",
+            "title": "Id",
+            "type": "string"
+          },
+          "title": {
+            "default": "",
+            "title": "Title",
+            "type": "string"
+          },
+          "kind": {
+            "default": "",
+            "title": "Kind",
+            "type": "string"
+          },
+          "subtitle": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Subtitle"
+          },
+          "description": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Description"
+          },
+          "status": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Status"
+          },
+          "url": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Url"
+          },
+          "ok": {
+            "default": true,
+            "title": "Ok",
+            "type": "boolean"
+          },
+          "detail": {
+            "default": "",
+            "title": "Detail",
+            "type": "string"
+          }
+        },
+        "title": "JobActionResult",
+        "type": "object",
+        "x-sdl": "entity"
+      },
+      "event": "uipath-connector.stop_job",
+      "background": false,
+      "long_running": false,
+      "scopes": [],
+      "owner_chat_tool": "uipath"
+    },
+    {
+      "name": "list_queues",
+      "description": "List queue definitions configured in a Folder.",
+      "action_type": "read",
+      "chain_callable": true,
+      "effects": [],
+      "id_projection": "",
+      "params_schema": {
+        "properties": {
+          "connection_id": {
+            "default": "",
+            "description": "Which connected organization to use. Omit if only one is connected.",
+            "title": "Connection Id",
+            "type": "string"
+          },
+          "folder_id": {
+            "default": "",
+            "description": "Orchestrator Folder ID. Omit to use the connection's default folder.",
+            "title": "Folder Id",
+            "type": "string"
+          }
+        },
+        "title": "ListQueuesParams",
+        "type": "object"
+      },
+      "return_schema": {
+        "$defs": {
+          "OrchestratorQueue": {
+            "properties": {
+              "id": {
+                "default": "",
+                "title": "Id",
+                "type": "string"
+              },
+              "title": {
+                "default": "",
+                "title": "Title",
+                "type": "string"
+              },
+              "kind": {
+                "default": "",
+                "title": "Kind",
+                "type": "string"
+              },
+              "subtitle": {
+                "anyOf": [
+                  {
+                    "type": "string"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ],
+                "default": null,
+                "title": "Subtitle"
+              },
+              "description": {
+                "default": "",
+                "title": "Description",
+                "type": "string"
+              },
+              "status": {
+                "anyOf": [
+                  {
+                    "type": "string"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ],
+                "default": null,
+                "title": "Status"
+              },
+              "url": {
+                "anyOf": [
+                  {
+                    "type": "string"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ],
+                "default": null,
+                "title": "Url"
+              },
+              "max_retries": {
+                "default": 0,
+                "title": "Max Retries",
+                "type": "integer"
+              },
+              "accept_automatically_retry": {
+                "default": false,
+                "title": "Accept Automatically Retry",
+                "type": "boolean"
+              }
+            },
+            "title": "OrchestratorQueue",
+            "type": "object",
+            "x-sdl": "entity"
+          }
+        },
+        "properties": {
+          "id": {
+            "default": "orchestrator_queue_list",
+            "title": "Id",
+            "type": "string"
+          },
+          "title": {
+            "default": "",
+            "title": "Title",
+            "type": "string"
+          },
+          "kind": {
+            "default": "",
+            "title": "Kind",
+            "type": "string"
+          },
+          "subtitle": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Subtitle"
+          },
+          "description": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Description"
+          },
+          "status": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Status"
+          },
+          "url": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Url"
+          },
+          "items": {
+            "items": {
+              "$ref": "#/$defs/OrchestratorQueue"
+            },
+            "title": "Items",
+            "type": "array"
+          }
+        },
+        "title": "OrchestratorQueueList",
+        "type": "object",
+        "x-sdl": "entity"
+      },
+      "event": "uipath-connector.list_queues",
+      "background": false,
+      "long_running": false,
+      "scopes": [],
+      "owner_chat_tool": "uipath"
+    },
+    {
+      "name": "list_queue_items",
+      "description": "List transaction items in a queue, optionally filtered by status (New, InProgress, Successful, Failed, Abandoned, Retried).",
+      "action_type": "read",
+      "chain_callable": true,
+      "effects": [],
+      "id_projection": "",
+      "params_schema": {
+        "properties": {
+          "connection_id": {
+            "default": "",
+            "description": "Which connected organization to use. Omit if only one is connected.",
+            "title": "Connection Id",
+            "type": "string"
+          },
+          "folder_id": {
+            "default": "",
+            "description": "Orchestrator Folder ID. Omit to use the connection's default folder.",
+            "title": "Folder Id",
+            "type": "string"
+          },
+          "queue_name": {
+            "description": "Queue definition name, from list_queues.",
+            "title": "Queue Name",
+            "type": "string"
+          },
+          "status": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "description": "Optional queue item status filter, e.g. 'New', 'InProgress', 'Successful', 'Failed'.",
+            "title": "Status"
+          }
+        },
+        "required": [
+          "queue_name"
+        ],
+        "title": "ListQueueItemsParams",
+        "type": "object"
+      },
+      "return_schema": {
+        "$defs": {
+          "QueueItem": {
+            "properties": {
+              "id": {
+                "default": "",
+                "title": "Id",
+                "type": "string"
+              },
+              "title": {
+                "default": "",
+                "title": "Title",
+                "type": "string"
+              },
+              "kind": {
+                "default": "",
+                "title": "Kind",
+                "type": "string"
+              },
+              "subtitle": {
+                "anyOf": [
+                  {
+                    "type": "string"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ],
+                "default": null,
+                "title": "Subtitle"
+              },
+              "description": {
+                "anyOf": [
+                  {
+                    "type": "string"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ],
+                "default": null,
+                "title": "Description"
+              },
+              "status": {
+                "default": "",
+                "title": "Status",
+                "type": "string"
+              },
+              "url": {
+                "anyOf": [
+                  {
+                    "type": "string"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ],
+                "default": null,
+                "title": "Url"
+              },
+              "queue_name": {
+                "default": "",
+                "title": "Queue Name",
+                "type": "string"
+              },
+              "priority": {
+                "default": "",
+                "title": "Priority",
+                "type": "string"
+              },
+              "reference": {
+                "default": "",
+                "title": "Reference",
+                "type": "string"
+              },
+              "retry_number": {
+                "default": 0,
+                "title": "Retry Number",
+                "type": "integer"
+              }
+            },
+            "title": "QueueItem",
+            "type": "object",
+            "x-sdl": "entity"
+          }
+        },
+        "properties": {
+          "id": {
+            "default": "queue_item_list",
+            "title": "Id",
+            "type": "string"
+          },
+          "title": {
+            "default": "",
+            "title": "Title",
+            "type": "string"
+          },
+          "kind": {
+            "default": "",
+            "title": "Kind",
+            "type": "string"
+          },
+          "subtitle": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Subtitle"
+          },
+          "description": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Description"
+          },
+          "status": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Status"
+          },
+          "url": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Url"
+          },
+          "items": {
+            "items": {
+              "$ref": "#/$defs/QueueItem"
+            },
+            "title": "Items",
+            "type": "array"
+          }
+        },
+        "title": "QueueItemList",
+        "type": "object",
+        "x-sdl": "entity"
+      },
+      "event": "uipath-connector.list_queue_items",
+      "background": false,
+      "long_running": false,
+      "scopes": [],
+      "owner_chat_tool": "uipath"
+    },
+    {
+      "name": "add_queue_item",
+      "description": "Add a new transaction item to a queue -- the payload a process will pick up and process.",
+      "action_type": "write",
+      "chain_callable": true,
+      "effects": [
+        "uipath.queue_item.added"
+      ],
+      "id_projection": "",
+      "params_schema": {
+        "properties": {
+          "connection_id": {
+            "default": "",
+            "description": "Which connected organization to use. Omit if only one is connected.",
+            "title": "Connection Id",
+            "type": "string"
+          },
+          "folder_id": {
+            "default": "",
+            "description": "Orchestrator Folder ID. Omit to use the connection's default folder.",
+            "title": "Folder Id",
+            "type": "string"
+          },
+          "queue_name": {
+            "description": "Queue definition name to add the item to.",
+            "title": "Queue Name",
+            "type": "string"
+          },
+          "priority": {
+            "default": "Normal",
+            "description": "'Low', 'Normal', or 'High'.",
+            "title": "Priority",
+            "type": "string"
+          },
+          "reference": {
+            "default": "",
+            "description": "Optional human-readable reference/business key for this item.",
+            "title": "Reference",
+            "type": "string"
+          },
+          "specific_content": {
+            "additionalProperties": true,
+            "description": "The transaction payload as key/value pairs -- what the process will read.",
+            "title": "Specific Content",
+            "type": "object"
+          }
+        },
+        "required": [
+          "queue_name"
+        ],
+        "title": "AddQueueItemParams",
+        "type": "object"
+      },
+      "return_schema": {
+        "properties": {
+          "id": {
+            "default": "",
+            "title": "Id",
+            "type": "string"
+          },
+          "title": {
+            "default": "",
+            "title": "Title",
+            "type": "string"
+          },
+          "kind": {
+            "default": "",
+            "title": "Kind",
+            "type": "string"
+          },
+          "subtitle": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Subtitle"
+          },
+          "description": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Description"
+          },
+          "status": {
+            "default": "",
+            "title": "Status",
+            "type": "string"
+          },
+          "url": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Url"
+          },
+          "queue_name": {
+            "default": "",
+            "title": "Queue Name",
+            "type": "string"
+          },
+          "priority": {
+            "default": "",
+            "title": "Priority",
+            "type": "string"
+          },
+          "reference": {
+            "default": "",
+            "title": "Reference",
+            "type": "string"
+          },
+          "retry_number": {
+            "default": 0,
+            "title": "Retry Number",
+            "type": "integer"
+          }
+        },
+        "title": "QueueItem",
+        "type": "object",
+        "x-sdl": "entity"
+      },
+      "event": "uipath-connector.add_queue_item",
+      "background": false,
+      "long_running": false,
+      "scopes": [],
+      "owner_chat_tool": "uipath"
+    },
+    {
+      "name": "set_queue_item_status",
+      "description": "Manually set a queue item's outcome to 'Successful' or 'Failed'.",
+      "action_type": "write",
+      "chain_callable": true,
+      "effects": [
+        "uipath.queue_item.updated"
+      ],
+      "id_projection": "",
+      "params_schema": {
+        "properties": {
+          "connection_id": {
+            "default": "",
+            "description": "Which connected organization to use. Omit if only one is connected.",
+            "title": "Connection Id",
+            "type": "string"
+          },
+          "folder_id": {
+            "default": "",
+            "description": "Orchestrator Folder ID. Omit to use the connection's default folder.",
+            "title": "Folder Id",
+            "type": "string"
+          },
+          "queue_item_id": {
+            "description": "Queue item id, from list_queue_items.",
+            "title": "Queue Item Id",
+            "type": "string"
+          },
+          "status": {
+            "description": "'Successful' or 'Failed'.",
+            "title": "Status",
+            "type": "string"
+          },
+          "is_reprocessable": {
+            "default": false,
+            "description": "For 'Failed' only: whether Orchestrator should retry this item automatically.",
+            "title": "Is Reprocessable",
+            "type": "boolean"
+          },
+          "reason": {
+            "default": "",
+            "description": "Optional note explaining the outcome.",
+            "title": "Reason",
+            "type": "string"
+          }
+        },
+        "required": [
+          "queue_item_id",
+          "status"
+        ],
+        "title": "SetQueueItemStatusParams",
+        "type": "object"
+      },
+      "return_schema": {
+        "properties": {
+          "id": {
+            "default": "",
+            "title": "Id",
+            "type": "string"
+          },
+          "title": {
+            "default": "",
+            "title": "Title",
+            "type": "string"
+          },
+          "kind": {
+            "default": "",
+            "title": "Kind",
+            "type": "string"
+          },
+          "subtitle": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Subtitle"
+          },
+          "description": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Description"
+          },
+          "status": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Status"
+          },
+          "url": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Url"
+          },
+          "ok": {
+            "default": true,
+            "title": "Ok",
+            "type": "boolean"
+          },
+          "detail": {
+            "default": "",
+            "title": "Detail",
+            "type": "string"
+          }
+        },
+        "title": "JobActionResult",
+        "type": "object",
+        "x-sdl": "entity"
+      },
+      "event": "uipath-connector.set_queue_item_status",
+      "background": false,
+      "long_running": false,
+      "scopes": [],
+      "owner_chat_tool": "uipath"
+    },
+    {
+      "name": "list_robots",
+      "description": "List robots registered in a Folder -- their machine, status, and type.",
+      "action_type": "read",
+      "chain_callable": true,
+      "effects": [],
+      "id_projection": "",
+      "params_schema": {
+        "properties": {
+          "connection_id": {
+            "default": "",
+            "description": "Which connected organization to use. Omit if only one is connected.",
+            "title": "Connection Id",
+            "type": "string"
+          },
+          "folder_id": {
+            "default": "",
+            "description": "Orchestrator Folder ID. Omit to use the connection's default folder.",
+            "title": "Folder Id",
+            "type": "string"
+          }
+        },
+        "title": "ListRobotsParams",
+        "type": "object"
+      },
+      "return_schema": {
+        "$defs": {
+          "OrchestratorRobot": {
+            "properties": {
+              "id": {
+                "default": "",
+                "title": "Id",
+                "type": "string"
+              },
+              "title": {
+                "default": "",
+                "title": "Title",
+                "type": "string"
+              },
+              "kind": {
+                "default": "",
+                "title": "Kind",
+                "type": "string"
+              },
+              "subtitle": {
+                "anyOf": [
+                  {
+                    "type": "string"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ],
+                "default": null,
+                "title": "Subtitle"
+              },
+              "description": {
+                "anyOf": [
+                  {
+                    "type": "string"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ],
+                "default": null,
+                "title": "Description"
+              },
+              "status": {
+                "default": "",
+                "title": "Status",
+                "type": "string"
+              },
+              "url": {
+                "anyOf": [
+                  {
+                    "type": "string"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ],
+                "default": null,
+                "title": "Url"
+              },
+              "machine_name": {
+                "default": "",
+                "title": "Machine Name",
+                "type": "string"
+              },
+              "type": {
+                "default": "",
+                "title": "Type",
+                "type": "string"
+              },
+              "hostname": {
+                "default": "",
+                "title": "Hostname",
+                "type": "string"
+              }
+            },
+            "title": "OrchestratorRobot",
+            "type": "object",
+            "x-sdl": "entity"
+          }
+        },
+        "properties": {
+          "id": {
+            "default": "orchestrator_robot_list",
+            "title": "Id",
+            "type": "string"
+          },
+          "title": {
+            "default": "",
+            "title": "Title",
+            "type": "string"
+          },
+          "kind": {
+            "default": "",
+            "title": "Kind",
+            "type": "string"
+          },
+          "subtitle": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Subtitle"
+          },
+          "description": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Description"
+          },
+          "status": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Status"
+          },
+          "url": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Url"
+          },
+          "items": {
+            "items": {
+              "$ref": "#/$defs/OrchestratorRobot"
+            },
+            "title": "Items",
+            "type": "array"
+          }
+        },
+        "title": "OrchestratorRobotList",
+        "type": "object",
+        "x-sdl": "entity"
+      },
+      "event": "uipath-connector.list_robots",
+      "background": false,
+      "long_running": false,
+      "scopes": [],
+      "owner_chat_tool": "uipath"
+    },
+    {
+      "name": "list_assets",
+      "description": "List assets (named configuration values/credentials/text) defined in a Folder.",
+      "action_type": "read",
+      "chain_callable": true,
+      "effects": [],
+      "id_projection": "",
+      "params_schema": {
+        "properties": {
+          "connection_id": {
+            "default": "",
+            "description": "Which connected organization to use. Omit if only one is connected.",
+            "title": "Connection Id",
+            "type": "string"
+          },
+          "folder_id": {
+            "default": "",
+            "description": "Orchestrator Folder ID. Omit to use the connection's default folder.",
+            "title": "Folder Id",
+            "type": "string"
+          }
+        },
+        "title": "ListAssetsParams",
+        "type": "object"
+      },
+      "return_schema": {
+        "$defs": {
+          "OrchestratorAsset": {
+            "properties": {
+              "id": {
+                "default": "",
+                "title": "Id",
+                "type": "string"
+              },
+              "title": {
+                "default": "",
+                "title": "Title",
+                "type": "string"
+              },
+              "kind": {
+                "default": "",
+                "title": "Kind",
+                "type": "string"
+              },
+              "subtitle": {
+                "anyOf": [
+                  {
+                    "type": "string"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ],
+                "default": null,
+                "title": "Subtitle"
+              },
+              "description": {
+                "default": "",
+                "title": "Description",
+                "type": "string"
+              },
+              "status": {
+                "anyOf": [
+                  {
+                    "type": "string"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ],
+                "default": null,
+                "title": "Status"
+              },
+              "url": {
+                "anyOf": [
+                  {
+                    "type": "string"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ],
+                "default": null,
+                "title": "Url"
+              },
+              "value_type": {
+                "default": "",
+                "title": "Value Type",
+                "type": "string"
+              },
+              "value": {
+                "default": "",
+                "title": "Value",
+                "type": "string"
+              }
+            },
+            "title": "OrchestratorAsset",
+            "type": "object",
+            "x-sdl": "entity"
+          }
+        },
+        "properties": {
+          "id": {
+            "default": "orchestrator_asset_list",
+            "title": "Id",
+            "type": "string"
+          },
+          "title": {
+            "default": "",
+            "title": "Title",
+            "type": "string"
+          },
+          "kind": {
+            "default": "",
+            "title": "Kind",
+            "type": "string"
+          },
+          "subtitle": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Subtitle"
+          },
+          "description": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Description"
+          },
+          "status": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Status"
+          },
+          "url": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Url"
+          },
+          "items": {
+            "items": {
+              "$ref": "#/$defs/OrchestratorAsset"
+            },
+            "title": "Items",
+            "type": "array"
+          }
+        },
+        "title": "OrchestratorAssetList",
+        "type": "object",
+        "x-sdl": "entity"
+      },
+      "event": "uipath-connector.list_assets",
+      "background": false,
+      "long_running": false,
+      "scopes": [],
+      "owner_chat_tool": "uipath"
+    },
+    {
+      "name": "get_asset",
+      "description": "Read one asset's value by name (credential assets never expose their secret).",
+      "action_type": "read",
+      "chain_callable": true,
+      "effects": [],
+      "id_projection": "",
+      "params_schema": {
+        "properties": {
+          "connection_id": {
+            "default": "",
+            "description": "Which connected organization to use. Omit if only one is connected.",
+            "title": "Connection Id",
+            "type": "string"
+          },
+          "folder_id": {
+            "default": "",
+            "description": "Orchestrator Folder ID. Omit to use the connection's default folder.",
+            "title": "Folder Id",
+            "type": "string"
+          },
+          "asset_name": {
+            "description": "Asset name, from list_assets.",
+            "title": "Asset Name",
+            "type": "string"
+          }
+        },
+        "required": [
+          "asset_name"
+        ],
+        "title": "GetAssetParams",
+        "type": "object"
+      },
+      "return_schema": {
+        "properties": {
+          "id": {
+            "default": "",
+            "title": "Id",
+            "type": "string"
+          },
+          "title": {
+            "default": "",
+            "title": "Title",
+            "type": "string"
+          },
+          "kind": {
+            "default": "",
+            "title": "Kind",
+            "type": "string"
+          },
+          "subtitle": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Subtitle"
+          },
+          "description": {
+            "default": "",
+            "title": "Description",
+            "type": "string"
+          },
+          "status": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Status"
+          },
+          "url": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Url"
+          },
+          "value_type": {
+            "default": "",
+            "title": "Value Type",
+            "type": "string"
+          },
+          "value": {
+            "default": "",
+            "title": "Value",
+            "type": "string"
+          }
+        },
+        "title": "OrchestratorAsset",
+        "type": "object",
+        "x-sdl": "entity"
+      },
+      "event": "uipath-connector.get_asset",
+      "background": false,
+      "long_running": false,
+      "scopes": [],
+      "owner_chat_tool": "uipath"
+    },
+    {
+      "name": "set_asset_value",
+      "description": "Update an existing asset's value.",
+      "action_type": "write",
+      "chain_callable": true,
+      "effects": [
+        "uipath.asset.updated"
+      ],
+      "id_projection": "",
+      "params_schema": {
+        "properties": {
+          "connection_id": {
+            "default": "",
+            "description": "Which connected organization to use. Omit if only one is connected.",
+            "title": "Connection Id",
+            "type": "string"
+          },
+          "folder_id": {
+            "default": "",
+            "description": "Orchestrator Folder ID. Omit to use the connection's default folder.",
+            "title": "Folder Id",
+            "type": "string"
+          },
+          "asset_name": {
+            "description": "Asset name to update, from list_assets.",
+            "title": "Asset Name",
+            "type": "string"
+          },
+          "value": {
+            "description": "New asset value (as text; interpreted per the asset's own value type).",
+            "title": "Value",
+            "type": "string"
+          }
+        },
+        "required": [
+          "asset_name",
+          "value"
+        ],
+        "title": "SetAssetValueParams",
+        "type": "object"
+      },
+      "return_schema": {
+        "properties": {
+          "id": {
+            "default": "",
+            "title": "Id",
+            "type": "string"
+          },
+          "title": {
+            "default": "",
+            "title": "Title",
+            "type": "string"
+          },
+          "kind": {
+            "default": "",
+            "title": "Kind",
+            "type": "string"
+          },
+          "subtitle": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Subtitle"
+          },
+          "description": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Description"
+          },
+          "status": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Status"
+          },
+          "url": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Url"
+          },
+          "ok": {
+            "default": true,
+            "title": "Ok",
+            "type": "boolean"
+          },
+          "detail": {
+            "default": "",
+            "title": "Detail",
+            "type": "string"
+          }
+        },
+        "title": "JobActionResult",
+        "type": "object",
+        "x-sdl": "entity"
+      },
+      "event": "uipath-connector.set_asset_value",
+      "background": false,
+      "long_running": false,
+      "scopes": [],
+      "owner_chat_tool": "uipath"
+    },
+    {
+      "name": "bulk_stop_jobs",
+      "description": "Stop several jobs in one call, by explicit job ids. Continues past per-item failures and reports which ones succeeded/failed.",
+      "action_type": "write",
+      "chain_callable": true,
+      "effects": [
+        "uipath.job.stopped"
+      ],
+      "id_projection": "",
+      "params_schema": {
+        "properties": {
+          "connection_id": {
+            "default": "",
+            "description": "Which connected organization to use. Omit if only one is connected.",
+            "title": "Connection Id",
+            "type": "string"
+          },
+          "folder_id": {
+            "default": "",
+            "description": "Orchestrator Folder ID. Omit to use the connection's default folder.",
+            "title": "Folder Id",
+            "type": "string"
+          },
+          "job_ids": {
+            "description": "Explicit job ids; 1-100, never inferred.",
+            "items": {
+              "type": "string"
+            },
+            "maxItems": 100,
+            "minItems": 1,
+            "title": "Job Ids",
+            "type": "array"
+          },
+          "strategy": {
+            "default": "Kill",
+            "description": "'Kill' (immediate) or 'SoftStop' (finish current transaction first). Only used for stop.",
+            "title": "Strategy",
+            "type": "string"
+          }
+        },
+        "required": [
+          "job_ids"
+        ],
+        "title": "BulkJobIdsParams",
+        "type": "object"
+      },
+      "return_schema": {
+        "$defs": {
+          "BulkJobResultItem": {
+            "properties": {
+              "id": {
+                "default": "",
+                "title": "Id",
+                "type": "string"
+              },
+              "title": {
+                "default": "",
+                "title": "Title",
+                "type": "string"
+              },
+              "kind": {
+                "default": "",
+                "title": "Kind",
+                "type": "string"
+              },
+              "subtitle": {
+                "anyOf": [
+                  {
+                    "type": "string"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ],
+                "default": null,
+                "title": "Subtitle"
+              },
+              "description": {
+                "anyOf": [
+                  {
+                    "type": "string"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ],
+                "default": null,
+                "title": "Description"
+              },
+              "status": {
+                "anyOf": [
+                  {
+                    "type": "string"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ],
+                "default": null,
+                "title": "Status"
+              },
+              "url": {
+                "anyOf": [
+                  {
+                    "type": "string"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ],
+                "default": null,
+                "title": "Url"
+              },
+              "job_id": {
+                "default": "",
+                "title": "Job Id",
+                "type": "string"
+              },
+              "ok": {
+                "default": true,
+                "title": "Ok",
+                "type": "boolean"
+              },
+              "error": {
+                "default": "",
+                "title": "Error",
+                "type": "string"
+              }
+            },
+            "title": "BulkJobResultItem",
+            "type": "object",
+            "x-sdl": "entity"
+          }
+        },
+        "properties": {
+          "id": {
+            "default": "bulk_job_result",
+            "title": "Id",
+            "type": "string"
+          },
+          "title": {
+            "default": "",
+            "title": "Title",
+            "type": "string"
+          },
+          "kind": {
+            "default": "",
+            "title": "Kind",
+            "type": "string"
+          },
+          "subtitle": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Subtitle"
+          },
+          "description": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Description"
+          },
+          "status": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Status"
+          },
+          "url": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Url"
+          },
+          "items": {
+            "items": {
+              "$ref": "#/$defs/BulkJobResultItem"
+            },
+            "title": "Items",
+            "type": "array"
+          },
+          "succeeded": {
+            "default": 0,
+            "title": "Succeeded",
+            "type": "integer"
+          },
+          "failed": {
+            "default": 0,
+            "title": "Failed",
+            "type": "integer"
+          }
+        },
+        "title": "BulkJobResult",
+        "type": "object",
+        "x-sdl": "entity"
+      },
+      "event": "uipath-connector.bulk_stop_jobs",
+      "background": false,
+      "long_running": false,
+      "scopes": [],
+      "owner_chat_tool": "uipath"
+    },
+    {
+      "name": "audit_folder",
+      "description": "Build one aggregated health report for a Folder: every process with its currently running job count and last-24h success/failure counts.",
+      "action_type": "read",
+      "chain_callable": true,
+      "effects": [],
+      "id_projection": "",
+      "params_schema": {
+        "properties": {
+          "connection_id": {
+            "default": "",
+            "description": "Which connected organization to use. Omit if only one is connected.",
+            "title": "Connection Id",
+            "type": "string"
+          },
+          "folder_id": {
+            "default": "",
+            "description": "Orchestrator Folder ID. Omit to use the connection's default folder.",
+            "title": "Folder Id",
+            "type": "string"
+          }
+        },
+        "title": "AuditFolderParams",
+        "type": "object"
+      },
+      "return_schema": {
+        "$defs": {
+          "FolderAuditRow": {
+            "properties": {
+              "id": {
+                "default": "",
+                "title": "Id",
+                "type": "string"
+              },
+              "title": {
+                "default": "",
+                "title": "Title",
+                "type": "string"
+              },
+              "kind": {
+                "default": "",
+                "title": "Kind",
+                "type": "string"
+              },
+              "subtitle": {
+                "anyOf": [
+                  {
+                    "type": "string"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ],
+                "default": null,
+                "title": "Subtitle"
+              },
+              "description": {
+                "anyOf": [
+                  {
+                    "type": "string"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ],
+                "default": null,
+                "title": "Description"
+              },
+              "status": {
+                "anyOf": [
+                  {
+                    "type": "string"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ],
+                "default": null,
+                "title": "Status"
+              },
+              "url": {
+                "anyOf": [
+                  {
+                    "type": "string"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ],
+                "default": null,
+                "title": "Url"
+              },
+              "process_key": {
+                "default": "",
+                "title": "Process Key",
+                "type": "string"
+              },
+              "running_jobs": {
+                "default": 0,
+                "title": "Running Jobs",
+                "type": "integer"
+              },
+              "faulted_jobs_24h": {
+                "default": 0,
+                "title": "Faulted Jobs 24H",
+                "type": "integer"
+              },
+              "successful_jobs_24h": {
+                "default": 0,
+                "title": "Successful Jobs 24H",
+                "type": "integer"
+              }
+            },
+            "title": "FolderAuditRow",
+            "type": "object",
+            "x-sdl": "entity"
+          }
+        },
+        "properties": {
+          "id": {
+            "default": "folder_audit_report",
+            "title": "Id",
+            "type": "string"
+          },
+          "title": {
+            "default": "",
+            "title": "Title",
+            "type": "string"
+          },
+          "kind": {
+            "default": "",
+            "title": "Kind",
+            "type": "string"
+          },
+          "subtitle": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Subtitle"
+          },
+          "description": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Description"
+          },
+          "status": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Status"
+          },
+          "url": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Url"
+          },
+          "items": {
+            "items": {
+              "$ref": "#/$defs/FolderAuditRow"
+            },
+            "title": "Items",
+            "type": "array"
+          },
+          "total_processes": {
+            "default": 0,
+            "title": "Total Processes",
+            "type": "integer"
+          },
+          "total_running_jobs": {
+            "default": 0,
+            "title": "Total Running Jobs",
+            "type": "integer"
+          },
+          "total_faulted_24h": {
+            "default": 0,
+            "title": "Total Faulted 24H",
+            "type": "integer"
+          }
+        },
+        "title": "FolderAuditReport",
+        "type": "object",
+        "x-sdl": "entity"
+      },
+      "event": "uipath-connector.audit_folder",
+      "background": false,
+      "long_running": false,
+      "scopes": [],
+      "owner_chat_tool": "uipath"
+    }
+  ],
+  "signals": [],
+  "schedules": [],
+  "required_scopes": [],
+  "icon_size_bytes": 293,
+  "lifecycle": {
+    "health_check": {
+      "interval_sec": 60
+    }
+  },
+  "secrets": [
+    {
+      "name": "uipath_connections",
+      "description": "Your connected UiPath Orchestrator organizations -- stored as a JSON array, one entry per organization/tenant, each with its own External Application (client_id, client_secret) and organization_name/tenant_name/default_folder_id. Managed through connect_uipath / disconnect_uipath -- you should not need to edit this directly.",
+      "required": true,
+      "write_mode": "both",
+      "max_bytes": 65536,
+      "scope": "user",
+      "rotation_hint_days": 180
+    }
+  ],
+  "panels": [
+    {
+      "panel_id": "secrets",
+      "slot": "right",
+      "title": "Secrets",
+      "tree": {},
+      "icon": "KeyRound",
+      "refresh": "manual",
+      "center_overlay": false
+    },
+    {
+      "panel_id": "uipath_connect",
+      "slot": "left",
+      "title": "UiPath",
+      "tree": {},
+      "icon": "🤖",
+      "refresh": "manual",
+      "center_overlay": false,
+      "default_width": 320,
+      "min_width": 260,
+      "max_width": 420
+    },
+    {
+      "panel_id": "uipath_connect_help",
+      "slot": "center",
+      "title": "How to connect UiPath",
+      "tree": {},
+      "icon": "",
+      "refresh": "manual",
+      "center_overlay": true
+    },
+    {
+      "panel_id": "uipath_center",
+      "slot": "center",
+      "title": "UiPath",
+      "tree": {},
+      "icon": "🤖",
+      "refresh": "manual",
+      "center_overlay": true
+    },
+    {
+      "panel_id": "uipath_settings",
+      "slot": "center",
+      "title": "UiPath -- App settings",
+      "tree": {},
+      "icon": "",
+      "refresh": "manual",
+      "center_overlay": false
+    }
+  ]
+}
