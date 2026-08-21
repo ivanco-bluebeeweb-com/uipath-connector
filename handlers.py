@@ -28,6 +28,19 @@ from schemas import (
     GetAssetParams, SetAssetValueParams,
     BulkJobResultItem, BulkJobResult, BulkJobIdsParams,
     AuditFolderParams, FolderAuditRow, FolderAuditReport,
+    ListFoldersParams, OrchestratorFolder, OrchestratorFolderList, GetFolderParams,
+    ListMachinesParams, OrchestratorMachine, OrchestratorMachineList, GetMachineParams,
+    ListEnvironmentsParams, OrchestratorEnvironment, OrchestratorEnvironmentList,
+    ListLibrariesParams, OrchestratorLibrary, OrchestratorLibraryList, GetLibraryParams,
+    ListSchedulesParams, OrchestratorSchedule, OrchestratorScheduleList,
+    SetScheduleEnabledParams, GetScheduleParams, RunScheduleParams,
+    ListBucketsParams, OrchestratorBucket, OrchestratorBucketList,
+    ListBucketFilesParams, BucketFile, BucketFileList,
+    GetBucketFileReadUriParams, BucketFileReadUri,
+    ListWebhooksParams, OrchestratorWebhook, OrchestratorWebhookList,
+    CreateWebhookParams, DeleteWebhookParams,
+    ListUsersParams, OrchestratorUser, OrchestratorUserList,
+    ListAuditLogsParams, OrchestratorAuditLogEntry, OrchestratorAuditLogList,
 )
 
 _SECRET_NAME = "uipath_connections"
@@ -702,3 +715,397 @@ async def audit_folder(ctx, params: AuditFolderParams) -> ActionResult:
         title="Folder audit", items=rows,
         total_processes=len(rows), total_running_jobs=total_running, total_faulted_24h=total_faulted,
     ))
+
+
+@chat.function(
+    "list_folders",
+    "List Orchestrator Folders (organization units) in the connected tenant.",
+    action_type="read",
+    chain_callable=True,
+    data_model=OrchestratorFolderList,
+    event="uipath-connector.list_folders",
+)
+async def list_folders(ctx, params: ListFoldersParams) -> ActionResult:
+    resolved = await _get_token_and_conn(ctx, params.connection_id)
+    if isinstance(resolved, ActionResult):
+        return resolved
+    conn, token, _ = resolved
+    try:
+        raw = await uc.list_folders(ctx, token, conn["organization_name"], conn["tenant_name"])
+    except uc.ClientFail as e:
+        return ActionResult.error(e.payload.get("error", "Failed to list folders."), code=e.payload.get("error_code", "UIPATH_ERROR"))
+    items = [OrchestratorFolder(id=str(f.get("Id", "")), title=f.get("DisplayName", ""), fully_qualified_name=f.get("FullyQualifiedName", ""), description=f.get("Description", "") or "", folder_type=f.get("FolderType", "")) for f in raw]
+    return ActionResult.ok(OrchestratorFolderList(title="Orchestrator folders", items=items))
+
+
+@chat.function(
+    "get_folder",
+    "Read one Orchestrator Folder in full.",
+    action_type="read",
+    chain_callable=True,
+    data_model=OrchestratorFolder,
+    event="uipath-connector.get_folder",
+)
+async def get_folder(ctx, params: GetFolderParams) -> ActionResult:
+    resolved = await _get_token_and_conn(ctx, params.connection_id)
+    if isinstance(resolved, ActionResult):
+        return resolved
+    conn, token, _ = resolved
+    try:
+        f = await uc.get_folder(ctx, token, conn["organization_name"], conn["tenant_name"], params.folder_id)
+    except uc.ClientFail as e:
+        return ActionResult.error(e.payload.get("error", "Failed to get folder."), code=e.payload.get("error_code", "UIPATH_ERROR"))
+    return ActionResult.ok(OrchestratorFolder(id=str(f.get("Id", "")), title=f.get("DisplayName", ""), fully_qualified_name=f.get("FullyQualifiedName", ""), description=f.get("Description", "") or "", folder_type=f.get("FolderType", "")))
+
+
+@chat.function(
+    "list_machines",
+    "List Machines (runtime hosts robots run on) registered in a Folder.",
+    action_type="read",
+    chain_callable=True,
+    data_model=OrchestratorMachineList,
+    event="uipath-connector.list_machines",
+)
+async def list_machines(ctx, params: ListMachinesParams) -> ActionResult:
+    resolved = await _get_token_and_conn(ctx, params.connection_id, params.folder_id)
+    if isinstance(resolved, ActionResult):
+        return resolved
+    conn, token, folder_id = resolved
+    try:
+        raw = await uc.list_machines(ctx, token, conn["organization_name"], conn["tenant_name"], folder_id)
+    except uc.ClientFail as e:
+        return ActionResult.error(e.payload.get("error", "Failed to list machines."), code=e.payload.get("error_code", "UIPATH_ERROR"))
+    items = [OrchestratorMachine(id=str(m.get("Id", "")), title=m.get("Name", ""), machine_type=m.get("Type", ""), non_production_slots=m.get("NonProductionSlots", 0) or 0, unattended_slots=m.get("UnattendedSlots", 0) or 0) for m in raw]
+    return ActionResult.ok(OrchestratorMachineList(title="Orchestrator machines", items=items))
+
+
+@chat.function(
+    "get_machine",
+    "Read one Machine in full.",
+    action_type="read",
+    chain_callable=True,
+    data_model=OrchestratorMachine,
+    event="uipath-connector.get_machine",
+)
+async def get_machine(ctx, params: GetMachineParams) -> ActionResult:
+    resolved = await _get_token_and_conn(ctx, params.connection_id, params.folder_id)
+    if isinstance(resolved, ActionResult):
+        return resolved
+    conn, token, folder_id = resolved
+    try:
+        m = await uc.get_machine(ctx, token, conn["organization_name"], conn["tenant_name"], folder_id, params.machine_id)
+    except uc.ClientFail as e:
+        return ActionResult.error(e.payload.get("error", "Failed to get machine."), code=e.payload.get("error_code", "UIPATH_ERROR"))
+    return ActionResult.ok(OrchestratorMachine(id=str(m.get("Id", "")), title=m.get("Name", ""), machine_type=m.get("Type", ""), non_production_slots=m.get("NonProductionSlots", 0) or 0, unattended_slots=m.get("UnattendedSlots", 0) or 0))
+
+
+@chat.function(
+    "list_environments",
+    "List Environments (legacy robot groupings) configured in a Folder.",
+    action_type="read",
+    chain_callable=True,
+    data_model=OrchestratorEnvironmentList,
+    event="uipath-connector.list_environments",
+)
+async def list_environments(ctx, params: ListEnvironmentsParams) -> ActionResult:
+    resolved = await _get_token_and_conn(ctx, params.connection_id, params.folder_id)
+    if isinstance(resolved, ActionResult):
+        return resolved
+    conn, token, folder_id = resolved
+    try:
+        raw = await uc.list_environments(ctx, token, conn["organization_name"], conn["tenant_name"], folder_id)
+    except uc.ClientFail as e:
+        return ActionResult.error(e.payload.get("error", "Failed to list environments."), code=e.payload.get("error_code", "UIPATH_ERROR"))
+    items = [OrchestratorEnvironment(id=str(e_.get("Id", "")), title=e_.get("Name", ""), description=e_.get("Description", "") or "") for e_ in raw]
+    return ActionResult.ok(OrchestratorEnvironmentList(title="Orchestrator environments", items=items))
+
+
+@chat.function(
+    "list_libraries",
+    "List Libraries (shared reusable automation components) published in a Folder.",
+    action_type="read",
+    chain_callable=True,
+    data_model=OrchestratorLibraryList,
+    event="uipath-connector.list_libraries",
+)
+async def list_libraries(ctx, params: ListLibrariesParams) -> ActionResult:
+    resolved = await _get_token_and_conn(ctx, params.connection_id, params.folder_id)
+    if isinstance(resolved, ActionResult):
+        return resolved
+    conn, token, folder_id = resolved
+    try:
+        raw = await uc.list_libraries(ctx, token, conn["organization_name"], conn["tenant_name"], folder_id)
+    except uc.ClientFail as e:
+        return ActionResult.error(e.payload.get("error", "Failed to list libraries."), code=e.payload.get("error_code", "UIPATH_ERROR"))
+    items = [OrchestratorLibrary(id=str(l.get("Id", "")), title=l.get("Title", "") or l.get("Name", ""), version=l.get("Version", ""), description=l.get("Description", "") or "") for l in raw]
+    return ActionResult.ok(OrchestratorLibraryList(title="Orchestrator libraries", items=items))
+
+
+@chat.function(
+    "get_library",
+    "Read one Library in full.",
+    action_type="read",
+    chain_callable=True,
+    data_model=OrchestratorLibrary,
+    event="uipath-connector.get_library",
+)
+async def get_library(ctx, params: GetLibraryParams) -> ActionResult:
+    resolved = await _get_token_and_conn(ctx, params.connection_id, params.folder_id)
+    if isinstance(resolved, ActionResult):
+        return resolved
+    conn, token, folder_id = resolved
+    try:
+        raw = await uc.list_libraries(ctx, token, conn["organization_name"], conn["tenant_name"], folder_id)
+    except uc.ClientFail as e:
+        return ActionResult.error(e.payload.get("error", "Failed to get library."), code=e.payload.get("error_code", "UIPATH_ERROR"))
+    match = next((l for l in raw if str(l.get("Id", "")) == params.library_id), None)
+    if not match:
+        return ActionResult.error("Library not found.", code="UIPATH_NOT_FOUND")
+    return ActionResult.ok(OrchestratorLibrary(id=str(match.get("Id", "")), title=match.get("Title", "") or match.get("Name", ""), version=match.get("Version", ""), description=match.get("Description", "") or ""))
+
+
+@chat.function(
+    "list_schedules",
+    "List Process Schedules (Triggers) -- Orchestrator's own recurring job scheduler -- configured in a Folder.",
+    action_type="read",
+    chain_callable=True,
+    data_model=OrchestratorScheduleList,
+    event="uipath-connector.list_schedules",
+)
+async def list_schedules(ctx, params: ListSchedulesParams) -> ActionResult:
+    resolved = await _get_token_and_conn(ctx, params.connection_id, params.folder_id)
+    if isinstance(resolved, ActionResult):
+        return resolved
+    conn, token, folder_id = resolved
+    try:
+        raw = await uc.list_schedules(ctx, token, conn["organization_name"], conn["tenant_name"], folder_id)
+    except uc.ClientFail as e:
+        return ActionResult.error(e.payload.get("error", "Failed to list schedules."), code=e.payload.get("error_code", "UIPATH_ERROR"))
+    items = [OrchestratorSchedule(id=str(s.get("Id", "")), title=s.get("Name", ""), enabled=bool(s.get("Enabled", False)), cron_expression=(s.get("StartProcessCron", "") or ""), process_key=((s.get("StartProcess") or {}).get("ProcessKey", "") if isinstance(s.get("StartProcess"), dict) else "")) for s in raw]
+    return ActionResult.ok(OrchestratorScheduleList(title="Orchestrator schedules", items=items))
+
+
+@chat.function(
+    "get_schedule",
+    "Read one Process Schedule (Trigger) in full.",
+    action_type="read",
+    chain_callable=True,
+    data_model=OrchestratorSchedule,
+    event="uipath-connector.get_schedule",
+)
+async def get_schedule(ctx, params: GetScheduleParams) -> ActionResult:
+    resolved = await _get_token_and_conn(ctx, params.connection_id, params.folder_id)
+    if isinstance(resolved, ActionResult):
+        return resolved
+    conn, token, folder_id = resolved
+    try:
+        s = await uc.get_schedule(ctx, token, conn["organization_name"], conn["tenant_name"], folder_id, params.schedule_id)
+    except uc.ClientFail as e:
+        return ActionResult.error(e.payload.get("error", "Failed to get schedule."), code=e.payload.get("error_code", "UIPATH_ERROR"))
+    return ActionResult.ok(OrchestratorSchedule(id=str(s.get("Id", "")), title=s.get("Name", ""), enabled=bool(s.get("Enabled", False)), cron_expression=(s.get("StartProcessCron", "") or ""), process_key=((s.get("StartProcess") or {}).get("ProcessKey", "") if isinstance(s.get("StartProcess"), dict) else "")))
+
+
+@chat.function(
+    "set_schedule_enabled",
+    "Enable or disable a Process Schedule (Trigger) without deleting it.",
+    action_type="write",
+    chain_callable=True,
+    data_model=OrchestratorSchedule,
+    event="uipath-connector.set_schedule_enabled",
+)
+async def set_schedule_enabled(ctx, params: SetScheduleEnabledParams) -> ActionResult:
+    resolved = await _get_token_and_conn(ctx, params.connection_id, params.folder_id)
+    if isinstance(resolved, ActionResult):
+        return resolved
+    conn, token, folder_id = resolved
+    try:
+        s = await uc.set_schedule_enabled(ctx, token, conn["organization_name"], conn["tenant_name"], folder_id, params.schedule_id, params.enabled)
+    except uc.ClientFail as e:
+        return ActionResult.error(e.payload.get("error", "Failed to update schedule."), code=e.payload.get("error_code", "UIPATH_ERROR"))
+    return ActionResult.ok(OrchestratorSchedule(id=params.schedule_id, title=s.get("Name", ""), enabled=params.enabled, cron_expression=(s.get("StartProcessCron", "") or ""), process_key=""), message=f"Schedule {'enabled' if params.enabled else 'disabled'}.")
+
+
+@chat.function(
+    "run_schedule",
+    "Run a Process Schedule (Trigger) right now, regardless of its cron timing.",
+    action_type="write",
+    chain_callable=True,
+    data_model=NoParams,
+    event="uipath-connector.run_schedule",
+)
+async def run_schedule(ctx, params: RunScheduleParams) -> ActionResult:
+    resolved = await _get_token_and_conn(ctx, params.connection_id, params.folder_id)
+    if isinstance(resolved, ActionResult):
+        return resolved
+    conn, token, folder_id = resolved
+    try:
+        await uc.run_schedule_now(ctx, token, conn["organization_name"], conn["tenant_name"], folder_id, params.schedule_id)
+    except uc.ClientFail as e:
+        return ActionResult.error(e.payload.get("error", "Failed to run schedule."), code=e.payload.get("error_code", "UIPATH_ERROR"))
+    return ActionResult.ok(NoParams(), message="Schedule triggered.")
+
+
+@chat.function(
+    "list_buckets",
+    "List Storage Buckets (Orchestrator's own file storage a process can read/write files from) configured in a Folder.",
+    action_type="read",
+    chain_callable=True,
+    data_model=OrchestratorBucketList,
+    event="uipath-connector.list_buckets",
+)
+async def list_buckets(ctx, params: ListBucketsParams) -> ActionResult:
+    resolved = await _get_token_and_conn(ctx, params.connection_id, params.folder_id)
+    if isinstance(resolved, ActionResult):
+        return resolved
+    conn, token, folder_id = resolved
+    try:
+        raw = await uc.list_buckets(ctx, token, conn["organization_name"], conn["tenant_name"], folder_id)
+    except uc.ClientFail as e:
+        return ActionResult.error(e.payload.get("error", "Failed to list buckets."), code=e.payload.get("error_code", "UIPATH_ERROR"))
+    items = [OrchestratorBucket(id=str(b.get("Id", "")), title=b.get("Name", ""), description=b.get("Description", "") or "", identifier=b.get("Identifier", "") or "") for b in raw]
+    return ActionResult.ok(OrchestratorBucketList(title="Orchestrator buckets", items=items))
+
+
+@chat.function(
+    "list_bucket_files",
+    "List files stored inside one Storage Bucket, optionally under a directory path.",
+    action_type="read",
+    chain_callable=True,
+    data_model=BucketFileList,
+    event="uipath-connector.list_bucket_files",
+)
+async def list_bucket_files(ctx, params: ListBucketFilesParams) -> ActionResult:
+    resolved = await _get_token_and_conn(ctx, params.connection_id, params.folder_id)
+    if isinstance(resolved, ActionResult):
+        return resolved
+    conn, token, folder_id = resolved
+    try:
+        raw = await uc.list_bucket_files(ctx, token, conn["organization_name"], conn["tenant_name"], folder_id, params.bucket_id, params.prefix or "/")
+    except uc.ClientFail as e:
+        return ActionResult.error(e.payload.get("error", "Failed to list bucket files."), code=e.payload.get("error_code", "UIPATH_ERROR"))
+    items = [BucketFile(id=f.get("FullPath", ""), title=f.get("Name", "") or f.get("FullPath", ""), full_path=f.get("FullPath", ""), content_type=f.get("ContentType", "") or "", size=f.get("Size", 0) or 0) for f in raw]
+    return ActionResult.ok(BucketFileList(title="Bucket files", items=items))
+
+
+@chat.function(
+    "get_bucket_file_read_uri",
+    "Get a signed, time-limited download URL for one file inside a Storage Bucket.",
+    action_type="read",
+    chain_callable=True,
+    data_model=BucketFileReadUri,
+    event="uipath-connector.get_bucket_file_read_uri",
+)
+async def get_bucket_file_read_uri(ctx, params: GetBucketFileReadUriParams) -> ActionResult:
+    resolved = await _get_token_and_conn(ctx, params.connection_id, params.folder_id)
+    if isinstance(resolved, ActionResult):
+        return resolved
+    conn, token, folder_id = resolved
+    try:
+        r = await uc.get_bucket_file_read_uri(ctx, token, conn["organization_name"], conn["tenant_name"], folder_id, params.bucket_id, params.path, params.expiry_minutes)
+    except uc.ClientFail as e:
+        return ActionResult.error(e.payload.get("error", "Failed to get file read URI."), code=e.payload.get("error_code", "UIPATH_ERROR"))
+    return ActionResult.ok(BucketFileReadUri(url=r.get("Uri", "") or r.get("BlobToken", {}).get("Uri", "") if isinstance(r, dict) else "", expires_in_minutes=params.expiry_minutes))
+
+
+@chat.function(
+    "list_webhooks",
+    "List Webhooks (Orchestrator's own event push subscriptions) configured on the connected tenant.",
+    action_type="read",
+    chain_callable=True,
+    data_model=OrchestratorWebhookList,
+    event="uipath-connector.list_webhooks",
+)
+async def list_webhooks(ctx, params: ListWebhooksParams) -> ActionResult:
+    resolved = await _get_token_and_conn(ctx, params.connection_id, params.folder_id)
+    if isinstance(resolved, ActionResult):
+        return resolved
+    conn, token, folder_id = resolved
+    try:
+        raw = await uc.list_webhooks(ctx, token, conn["organization_name"], conn["tenant_name"], folder_id)
+    except uc.ClientFail as e:
+        return ActionResult.error(e.payload.get("error", "Failed to list webhooks."), code=e.payload.get("error_code", "UIPATH_ERROR"))
+    items = [OrchestratorWebhook(id=str(w.get("Id", "")), title=w.get("Name", "") or w.get("Url", ""), url=w.get("Url", ""), enabled=bool(w.get("Enabled", False))) for w in raw]
+    return ActionResult.ok(OrchestratorWebhookList(title="Orchestrator webhooks", items=items))
+
+
+@chat.function(
+    "create_webhook",
+    "Create a new Webhook subscription: Orchestrator will POST events to your URL as they happen "
+    "(e.g. job.completed, job.faulted) instead of you having to poll.",
+    action_type="write",
+    chain_callable=True,
+    data_model=OrchestratorWebhook,
+    event="uipath-connector.create_webhook",
+)
+async def create_webhook(ctx, params: CreateWebhookParams) -> ActionResult:
+    resolved = await _get_token_and_conn(ctx, params.connection_id, params.folder_id)
+    if isinstance(resolved, ActionResult):
+        return resolved
+    conn, token, folder_id = resolved
+    try:
+        w = await uc.create_webhook(ctx, token, conn["organization_name"], conn["tenant_name"], folder_id, url=params.url, events=params.events, secret=params.secret)
+    except uc.ClientFail as e:
+        return ActionResult.error(e.payload.get("error", "Failed to create webhook."), code=e.payload.get("error_code", "UIPATH_ERROR"))
+    return ActionResult.ok(OrchestratorWebhook(id=str(w.get("Id", "")), title=w.get("Name", "") or w.get("Url", ""), url=w.get("Url", ""), enabled=bool(w.get("Enabled", False))), message="Webhook created.")
+
+
+@chat.function(
+    "delete_webhook",
+    "Permanently remove a Webhook subscription. Cannot be undone.",
+    action_type="write",
+    chain_callable=True,
+    data_model=DeleteResult,
+    event="uipath-connector.delete_webhook",
+)
+async def delete_webhook(ctx, params: DeleteWebhookParams) -> ActionResult:
+    resolved = await _get_token_and_conn(ctx, params.connection_id, params.folder_id)
+    if isinstance(resolved, ActionResult):
+        return resolved
+    conn, token, folder_id = resolved
+    try:
+        await uc.delete_webhook(ctx, token, conn["organization_name"], conn["tenant_name"], folder_id, params.webhook_id)
+    except uc.ClientFail as e:
+        return ActionResult.error(e.payload.get("error", "Failed to delete webhook."), code=e.payload.get("error_code", "UIPATH_ERROR"))
+    return ActionResult.ok(DeleteResult(deleted=True), message="Webhook deleted.")
+
+
+@chat.function(
+    "list_users",
+    "List Users registered in the connected UiPath Automation Cloud organization.",
+    action_type="read",
+    chain_callable=True,
+    data_model=OrchestratorUserList,
+    event="uipath-connector.list_users",
+)
+async def list_users(ctx, params: ListUsersParams) -> ActionResult:
+    resolved = await _get_token_and_conn(ctx, params.connection_id)
+    if isinstance(resolved, ActionResult):
+        return resolved
+    conn, token, _ = resolved
+    try:
+        raw = await uc.list_users(ctx, token, conn["organization_name"], conn["tenant_name"])
+    except uc.ClientFail as e:
+        return ActionResult.error(e.payload.get("error", "Failed to list users."), code=e.payload.get("error_code", "UIPATH_ERROR"))
+    items = [OrchestratorUser(id=str(u.get("Id", "")), title=u.get("Name", "") or u.get("UserName", ""), username=u.get("UserName", ""), email=u.get("Email", "") or "", is_active=not bool(u.get("IsDisabled", False))) for u in raw]
+    return ActionResult.ok(OrchestratorUserList(title="Orchestrator users", items=items))
+
+
+@chat.function(
+    "list_audit_logs",
+    "List Audit Log entries -- Orchestrator's own record of who did what and when -- for a Folder.",
+    action_type="read",
+    chain_callable=True,
+    data_model=OrchestratorAuditLogList,
+    event="uipath-connector.list_audit_logs",
+)
+async def list_audit_logs(ctx, params: ListAuditLogsParams) -> ActionResult:
+    resolved = await _get_token_and_conn(ctx, params.connection_id, params.folder_id)
+    if isinstance(resolved, ActionResult):
+        return resolved
+    conn, token, folder_id = resolved
+    try:
+        raw = await uc.list_audit_logs(ctx, token, conn["organization_name"], conn["tenant_name"], folder_id, top=params.top)
+    except uc.ClientFail as e:
+        return ActionResult.error(e.payload.get("error", "Failed to list audit logs."), code=e.payload.get("error_code", "UIPATH_ERROR"))
+    items = [OrchestratorAuditLogEntry(id=str(a.get("Id", "")), title=(str(a.get("Component", "") or "") + ": " + str(a.get("Action", "") or "")), component=a.get("Component", "") or "", action=a.get("Action", "") or "", execution_time=a.get("ExecutionTime", "") or "", user_name=a.get("User", "") or "") for a in raw]
+    return ActionResult.ok(OrchestratorAuditLogList(title="Orchestrator audit logs", items=items))

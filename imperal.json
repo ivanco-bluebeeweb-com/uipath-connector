@@ -3156,6 +3156,2870 @@
       "long_running": false,
       "scopes": [],
       "owner_chat_tool": "uipath"
+    },
+    {
+      "name": "list_folders",
+      "description": "List Orchestrator Folders (organization units) in the connected tenant.",
+      "action_type": "read",
+      "chain_callable": true,
+      "effects": [],
+      "id_projection": "",
+      "params_schema": {
+        "properties": {
+          "connection_id": {
+            "default": "",
+            "description": "Which connected organization to use. Omit if only one is connected.",
+            "title": "Connection Id",
+            "type": "string"
+          }
+        },
+        "title": "ListFoldersParams",
+        "type": "object"
+      },
+      "return_schema": {
+        "$defs": {
+          "OrchestratorFolder": {
+            "properties": {
+              "id": {
+                "default": "",
+                "title": "Id",
+                "type": "string"
+              },
+              "title": {
+                "default": "",
+                "title": "Title",
+                "type": "string"
+              },
+              "kind": {
+                "default": "",
+                "title": "Kind",
+                "type": "string"
+              },
+              "subtitle": {
+                "anyOf": [
+                  {
+                    "type": "string"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ],
+                "default": null,
+                "title": "Subtitle"
+              },
+              "description": {
+                "default": "",
+                "title": "Description",
+                "type": "string"
+              },
+              "status": {
+                "anyOf": [
+                  {
+                    "type": "string"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ],
+                "default": null,
+                "title": "Status"
+              },
+              "url": {
+                "anyOf": [
+                  {
+                    "type": "string"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ],
+                "default": null,
+                "title": "Url"
+              },
+              "fully_qualified_name": {
+                "default": "",
+                "title": "Fully Qualified Name",
+                "type": "string"
+              },
+              "folder_type": {
+                "default": "",
+                "title": "Folder Type",
+                "type": "string"
+              }
+            },
+            "title": "OrchestratorFolder",
+            "type": "object",
+            "x-sdl": "entity"
+          }
+        },
+        "properties": {
+          "id": {
+            "default": "orchestrator_folder_list",
+            "title": "Id",
+            "type": "string"
+          },
+          "title": {
+            "default": "",
+            "title": "Title",
+            "type": "string"
+          },
+          "kind": {
+            "default": "",
+            "title": "Kind",
+            "type": "string"
+          },
+          "subtitle": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Subtitle"
+          },
+          "description": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Description"
+          },
+          "status": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Status"
+          },
+          "url": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Url"
+          },
+          "items": {
+            "items": {
+              "$ref": "#/$defs/OrchestratorFolder"
+            },
+            "title": "Items",
+            "type": "array"
+          }
+        },
+        "title": "OrchestratorFolderList",
+        "type": "object",
+        "x-sdl": "entity"
+      },
+      "event": "uipath-connector.list_folders",
+      "background": false,
+      "long_running": false,
+      "scopes": [],
+      "owner_chat_tool": "uipath"
+    },
+    {
+      "name": "get_folder",
+      "description": "Read one Orchestrator Folder in full.",
+      "action_type": "read",
+      "chain_callable": true,
+      "effects": [],
+      "id_projection": "",
+      "params_schema": {
+        "properties": {
+          "connection_id": {
+            "default": "",
+            "description": "Which connected organization to use. Omit if only one is connected.",
+            "title": "Connection Id",
+            "type": "string"
+          },
+          "folder_id": {
+            "description": "Folder id, from list_folders.",
+            "title": "Folder Id",
+            "type": "string"
+          }
+        },
+        "required": [
+          "folder_id"
+        ],
+        "title": "GetFolderParams",
+        "type": "object"
+      },
+      "return_schema": {
+        "properties": {
+          "id": {
+            "default": "",
+            "title": "Id",
+            "type": "string"
+          },
+          "title": {
+            "default": "",
+            "title": "Title",
+            "type": "string"
+          },
+          "kind": {
+            "default": "",
+            "title": "Kind",
+            "type": "string"
+          },
+          "subtitle": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Subtitle"
+          },
+          "description": {
+            "default": "",
+            "title": "Description",
+            "type": "string"
+          },
+          "status": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Status"
+          },
+          "url": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Url"
+          },
+          "fully_qualified_name": {
+            "default": "",
+            "title": "Fully Qualified Name",
+            "type": "string"
+          },
+          "folder_type": {
+            "default": "",
+            "title": "Folder Type",
+            "type": "string"
+          }
+        },
+        "title": "OrchestratorFolder",
+        "type": "object",
+        "x-sdl": "entity"
+      },
+      "event": "uipath-connector.get_folder",
+      "background": false,
+      "long_running": false,
+      "scopes": [],
+      "owner_chat_tool": "uipath"
+    },
+    {
+      "name": "list_machines",
+      "description": "List Machines (runtime hosts robots run on) registered in a Folder.",
+      "action_type": "read",
+      "chain_callable": true,
+      "effects": [],
+      "id_projection": "",
+      "params_schema": {
+        "properties": {
+          "connection_id": {
+            "default": "",
+            "description": "Which connected organization to use. Omit if only one is connected.",
+            "title": "Connection Id",
+            "type": "string"
+          },
+          "folder_id": {
+            "default": "",
+            "description": "Orchestrator Folder ID. Omit to use the connection's default folder.",
+            "title": "Folder Id",
+            "type": "string"
+          }
+        },
+        "title": "ListMachinesParams",
+        "type": "object"
+      },
+      "return_schema": {
+        "$defs": {
+          "OrchestratorMachine": {
+            "properties": {
+              "id": {
+                "default": "",
+                "title": "Id",
+                "type": "string"
+              },
+              "title": {
+                "default": "",
+                "title": "Title",
+                "type": "string"
+              },
+              "kind": {
+                "default": "",
+                "title": "Kind",
+                "type": "string"
+              },
+              "subtitle": {
+                "anyOf": [
+                  {
+                    "type": "string"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ],
+                "default": null,
+                "title": "Subtitle"
+              },
+              "description": {
+                "anyOf": [
+                  {
+                    "type": "string"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ],
+                "default": null,
+                "title": "Description"
+              },
+              "status": {
+                "anyOf": [
+                  {
+                    "type": "string"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ],
+                "default": null,
+                "title": "Status"
+              },
+              "url": {
+                "anyOf": [
+                  {
+                    "type": "string"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ],
+                "default": null,
+                "title": "Url"
+              },
+              "machine_type": {
+                "default": "",
+                "title": "Machine Type",
+                "type": "string"
+              },
+              "non_production_slots": {
+                "default": 0,
+                "title": "Non Production Slots",
+                "type": "integer"
+              },
+              "unattended_slots": {
+                "default": 0,
+                "title": "Unattended Slots",
+                "type": "integer"
+              }
+            },
+            "title": "OrchestratorMachine",
+            "type": "object",
+            "x-sdl": "entity"
+          }
+        },
+        "properties": {
+          "id": {
+            "default": "orchestrator_machine_list",
+            "title": "Id",
+            "type": "string"
+          },
+          "title": {
+            "default": "",
+            "title": "Title",
+            "type": "string"
+          },
+          "kind": {
+            "default": "",
+            "title": "Kind",
+            "type": "string"
+          },
+          "subtitle": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Subtitle"
+          },
+          "description": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Description"
+          },
+          "status": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Status"
+          },
+          "url": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Url"
+          },
+          "items": {
+            "items": {
+              "$ref": "#/$defs/OrchestratorMachine"
+            },
+            "title": "Items",
+            "type": "array"
+          }
+        },
+        "title": "OrchestratorMachineList",
+        "type": "object",
+        "x-sdl": "entity"
+      },
+      "event": "uipath-connector.list_machines",
+      "background": false,
+      "long_running": false,
+      "scopes": [],
+      "owner_chat_tool": "uipath"
+    },
+    {
+      "name": "get_machine",
+      "description": "Read one Machine in full.",
+      "action_type": "read",
+      "chain_callable": true,
+      "effects": [],
+      "id_projection": "",
+      "params_schema": {
+        "properties": {
+          "connection_id": {
+            "default": "",
+            "description": "Which connected organization to use. Omit if only one is connected.",
+            "title": "Connection Id",
+            "type": "string"
+          },
+          "folder_id": {
+            "default": "",
+            "description": "Orchestrator Folder ID. Omit to use the connection's default folder.",
+            "title": "Folder Id",
+            "type": "string"
+          },
+          "machine_id": {
+            "description": "Machine id, from list_machines.",
+            "title": "Machine Id",
+            "type": "string"
+          }
+        },
+        "required": [
+          "machine_id"
+        ],
+        "title": "GetMachineParams",
+        "type": "object"
+      },
+      "return_schema": {
+        "properties": {
+          "id": {
+            "default": "",
+            "title": "Id",
+            "type": "string"
+          },
+          "title": {
+            "default": "",
+            "title": "Title",
+            "type": "string"
+          },
+          "kind": {
+            "default": "",
+            "title": "Kind",
+            "type": "string"
+          },
+          "subtitle": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Subtitle"
+          },
+          "description": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Description"
+          },
+          "status": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Status"
+          },
+          "url": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Url"
+          },
+          "machine_type": {
+            "default": "",
+            "title": "Machine Type",
+            "type": "string"
+          },
+          "non_production_slots": {
+            "default": 0,
+            "title": "Non Production Slots",
+            "type": "integer"
+          },
+          "unattended_slots": {
+            "default": 0,
+            "title": "Unattended Slots",
+            "type": "integer"
+          }
+        },
+        "title": "OrchestratorMachine",
+        "type": "object",
+        "x-sdl": "entity"
+      },
+      "event": "uipath-connector.get_machine",
+      "background": false,
+      "long_running": false,
+      "scopes": [],
+      "owner_chat_tool": "uipath"
+    },
+    {
+      "name": "list_environments",
+      "description": "List Environments (legacy robot groupings) configured in a Folder.",
+      "action_type": "read",
+      "chain_callable": true,
+      "effects": [],
+      "id_projection": "",
+      "params_schema": {
+        "properties": {
+          "connection_id": {
+            "default": "",
+            "description": "Which connected organization to use. Omit if only one is connected.",
+            "title": "Connection Id",
+            "type": "string"
+          },
+          "folder_id": {
+            "default": "",
+            "description": "Orchestrator Folder ID. Omit to use the connection's default folder.",
+            "title": "Folder Id",
+            "type": "string"
+          }
+        },
+        "title": "ListEnvironmentsParams",
+        "type": "object"
+      },
+      "return_schema": {
+        "$defs": {
+          "OrchestratorEnvironment": {
+            "properties": {
+              "id": {
+                "default": "",
+                "title": "Id",
+                "type": "string"
+              },
+              "title": {
+                "default": "",
+                "title": "Title",
+                "type": "string"
+              },
+              "kind": {
+                "default": "",
+                "title": "Kind",
+                "type": "string"
+              },
+              "subtitle": {
+                "anyOf": [
+                  {
+                    "type": "string"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ],
+                "default": null,
+                "title": "Subtitle"
+              },
+              "description": {
+                "default": "",
+                "title": "Description",
+                "type": "string"
+              },
+              "status": {
+                "anyOf": [
+                  {
+                    "type": "string"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ],
+                "default": null,
+                "title": "Status"
+              },
+              "url": {
+                "anyOf": [
+                  {
+                    "type": "string"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ],
+                "default": null,
+                "title": "Url"
+              }
+            },
+            "title": "OrchestratorEnvironment",
+            "type": "object",
+            "x-sdl": "entity"
+          }
+        },
+        "properties": {
+          "id": {
+            "default": "orchestrator_environment_list",
+            "title": "Id",
+            "type": "string"
+          },
+          "title": {
+            "default": "",
+            "title": "Title",
+            "type": "string"
+          },
+          "kind": {
+            "default": "",
+            "title": "Kind",
+            "type": "string"
+          },
+          "subtitle": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Subtitle"
+          },
+          "description": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Description"
+          },
+          "status": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Status"
+          },
+          "url": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Url"
+          },
+          "items": {
+            "items": {
+              "$ref": "#/$defs/OrchestratorEnvironment"
+            },
+            "title": "Items",
+            "type": "array"
+          }
+        },
+        "title": "OrchestratorEnvironmentList",
+        "type": "object",
+        "x-sdl": "entity"
+      },
+      "event": "uipath-connector.list_environments",
+      "background": false,
+      "long_running": false,
+      "scopes": [],
+      "owner_chat_tool": "uipath"
+    },
+    {
+      "name": "list_libraries",
+      "description": "List Libraries (shared reusable automation components) published in a Folder.",
+      "action_type": "read",
+      "chain_callable": true,
+      "effects": [],
+      "id_projection": "",
+      "params_schema": {
+        "properties": {
+          "connection_id": {
+            "default": "",
+            "description": "Which connected organization to use. Omit if only one is connected.",
+            "title": "Connection Id",
+            "type": "string"
+          },
+          "folder_id": {
+            "default": "",
+            "description": "Orchestrator Folder ID. Omit to use the connection's default folder.",
+            "title": "Folder Id",
+            "type": "string"
+          }
+        },
+        "title": "ListLibrariesParams",
+        "type": "object"
+      },
+      "return_schema": {
+        "$defs": {
+          "OrchestratorLibrary": {
+            "properties": {
+              "id": {
+                "default": "",
+                "title": "Id",
+                "type": "string"
+              },
+              "title": {
+                "default": "",
+                "title": "Title",
+                "type": "string"
+              },
+              "kind": {
+                "default": "",
+                "title": "Kind",
+                "type": "string"
+              },
+              "subtitle": {
+                "anyOf": [
+                  {
+                    "type": "string"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ],
+                "default": null,
+                "title": "Subtitle"
+              },
+              "description": {
+                "default": "",
+                "title": "Description",
+                "type": "string"
+              },
+              "status": {
+                "anyOf": [
+                  {
+                    "type": "string"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ],
+                "default": null,
+                "title": "Status"
+              },
+              "url": {
+                "anyOf": [
+                  {
+                    "type": "string"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ],
+                "default": null,
+                "title": "Url"
+              },
+              "version": {
+                "default": "",
+                "title": "Version",
+                "type": "string"
+              }
+            },
+            "title": "OrchestratorLibrary",
+            "type": "object",
+            "x-sdl": "entity"
+          }
+        },
+        "properties": {
+          "id": {
+            "default": "orchestrator_library_list",
+            "title": "Id",
+            "type": "string"
+          },
+          "title": {
+            "default": "",
+            "title": "Title",
+            "type": "string"
+          },
+          "kind": {
+            "default": "",
+            "title": "Kind",
+            "type": "string"
+          },
+          "subtitle": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Subtitle"
+          },
+          "description": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Description"
+          },
+          "status": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Status"
+          },
+          "url": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Url"
+          },
+          "items": {
+            "items": {
+              "$ref": "#/$defs/OrchestratorLibrary"
+            },
+            "title": "Items",
+            "type": "array"
+          }
+        },
+        "title": "OrchestratorLibraryList",
+        "type": "object",
+        "x-sdl": "entity"
+      },
+      "event": "uipath-connector.list_libraries",
+      "background": false,
+      "long_running": false,
+      "scopes": [],
+      "owner_chat_tool": "uipath"
+    },
+    {
+      "name": "get_library",
+      "description": "Read one Library in full.",
+      "action_type": "read",
+      "chain_callable": true,
+      "effects": [],
+      "id_projection": "",
+      "params_schema": {
+        "properties": {
+          "connection_id": {
+            "default": "",
+            "description": "Which connected organization to use. Omit if only one is connected.",
+            "title": "Connection Id",
+            "type": "string"
+          },
+          "folder_id": {
+            "default": "",
+            "description": "Orchestrator Folder ID. Omit to use the connection's default folder.",
+            "title": "Folder Id",
+            "type": "string"
+          },
+          "library_id": {
+            "description": "Library id, from list_libraries.",
+            "title": "Library Id",
+            "type": "string"
+          }
+        },
+        "required": [
+          "library_id"
+        ],
+        "title": "GetLibraryParams",
+        "type": "object"
+      },
+      "return_schema": {
+        "properties": {
+          "id": {
+            "default": "",
+            "title": "Id",
+            "type": "string"
+          },
+          "title": {
+            "default": "",
+            "title": "Title",
+            "type": "string"
+          },
+          "kind": {
+            "default": "",
+            "title": "Kind",
+            "type": "string"
+          },
+          "subtitle": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Subtitle"
+          },
+          "description": {
+            "default": "",
+            "title": "Description",
+            "type": "string"
+          },
+          "status": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Status"
+          },
+          "url": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Url"
+          },
+          "version": {
+            "default": "",
+            "title": "Version",
+            "type": "string"
+          }
+        },
+        "title": "OrchestratorLibrary",
+        "type": "object",
+        "x-sdl": "entity"
+      },
+      "event": "uipath-connector.get_library",
+      "background": false,
+      "long_running": false,
+      "scopes": [],
+      "owner_chat_tool": "uipath"
+    },
+    {
+      "name": "list_schedules",
+      "description": "List Process Schedules (Triggers) -- Orchestrator's own recurring job scheduler -- configured in a Folder.",
+      "action_type": "read",
+      "chain_callable": true,
+      "effects": [],
+      "id_projection": "",
+      "params_schema": {
+        "properties": {
+          "connection_id": {
+            "default": "",
+            "description": "Which connected organization to use. Omit if only one is connected.",
+            "title": "Connection Id",
+            "type": "string"
+          },
+          "folder_id": {
+            "default": "",
+            "description": "Orchestrator Folder ID. Omit to use the connection's default folder.",
+            "title": "Folder Id",
+            "type": "string"
+          }
+        },
+        "title": "ListSchedulesParams",
+        "type": "object"
+      },
+      "return_schema": {
+        "$defs": {
+          "OrchestratorSchedule": {
+            "properties": {
+              "id": {
+                "default": "",
+                "title": "Id",
+                "type": "string"
+              },
+              "title": {
+                "default": "",
+                "title": "Title",
+                "type": "string"
+              },
+              "kind": {
+                "default": "",
+                "title": "Kind",
+                "type": "string"
+              },
+              "subtitle": {
+                "anyOf": [
+                  {
+                    "type": "string"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ],
+                "default": null,
+                "title": "Subtitle"
+              },
+              "description": {
+                "anyOf": [
+                  {
+                    "type": "string"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ],
+                "default": null,
+                "title": "Description"
+              },
+              "status": {
+                "anyOf": [
+                  {
+                    "type": "string"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ],
+                "default": null,
+                "title": "Status"
+              },
+              "url": {
+                "anyOf": [
+                  {
+                    "type": "string"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ],
+                "default": null,
+                "title": "Url"
+              },
+              "enabled": {
+                "default": false,
+                "title": "Enabled",
+                "type": "boolean"
+              },
+              "cron_expression": {
+                "default": "",
+                "title": "Cron Expression",
+                "type": "string"
+              },
+              "process_key": {
+                "default": "",
+                "title": "Process Key",
+                "type": "string"
+              }
+            },
+            "title": "OrchestratorSchedule",
+            "type": "object",
+            "x-sdl": "entity"
+          }
+        },
+        "properties": {
+          "id": {
+            "default": "orchestrator_schedule_list",
+            "title": "Id",
+            "type": "string"
+          },
+          "title": {
+            "default": "",
+            "title": "Title",
+            "type": "string"
+          },
+          "kind": {
+            "default": "",
+            "title": "Kind",
+            "type": "string"
+          },
+          "subtitle": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Subtitle"
+          },
+          "description": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Description"
+          },
+          "status": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Status"
+          },
+          "url": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Url"
+          },
+          "items": {
+            "items": {
+              "$ref": "#/$defs/OrchestratorSchedule"
+            },
+            "title": "Items",
+            "type": "array"
+          }
+        },
+        "title": "OrchestratorScheduleList",
+        "type": "object",
+        "x-sdl": "entity"
+      },
+      "event": "uipath-connector.list_schedules",
+      "background": false,
+      "long_running": false,
+      "scopes": [],
+      "owner_chat_tool": "uipath"
+    },
+    {
+      "name": "get_schedule",
+      "description": "Read one Process Schedule (Trigger) in full.",
+      "action_type": "read",
+      "chain_callable": true,
+      "effects": [],
+      "id_projection": "",
+      "params_schema": {
+        "properties": {
+          "connection_id": {
+            "default": "",
+            "description": "Which connected organization to use. Omit if only one is connected.",
+            "title": "Connection Id",
+            "type": "string"
+          },
+          "folder_id": {
+            "default": "",
+            "description": "Orchestrator Folder ID. Omit to use the connection's default folder.",
+            "title": "Folder Id",
+            "type": "string"
+          },
+          "schedule_id": {
+            "description": "Schedule (trigger) id, from list_schedules.",
+            "title": "Schedule Id",
+            "type": "string"
+          }
+        },
+        "required": [
+          "schedule_id"
+        ],
+        "title": "GetScheduleParams",
+        "type": "object"
+      },
+      "return_schema": {
+        "properties": {
+          "id": {
+            "default": "",
+            "title": "Id",
+            "type": "string"
+          },
+          "title": {
+            "default": "",
+            "title": "Title",
+            "type": "string"
+          },
+          "kind": {
+            "default": "",
+            "title": "Kind",
+            "type": "string"
+          },
+          "subtitle": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Subtitle"
+          },
+          "description": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Description"
+          },
+          "status": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Status"
+          },
+          "url": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Url"
+          },
+          "enabled": {
+            "default": false,
+            "title": "Enabled",
+            "type": "boolean"
+          },
+          "cron_expression": {
+            "default": "",
+            "title": "Cron Expression",
+            "type": "string"
+          },
+          "process_key": {
+            "default": "",
+            "title": "Process Key",
+            "type": "string"
+          }
+        },
+        "title": "OrchestratorSchedule",
+        "type": "object",
+        "x-sdl": "entity"
+      },
+      "event": "uipath-connector.get_schedule",
+      "background": false,
+      "long_running": false,
+      "scopes": [],
+      "owner_chat_tool": "uipath"
+    },
+    {
+      "name": "set_schedule_enabled",
+      "description": "Enable or disable a Process Schedule (Trigger) without deleting it.",
+      "action_type": "write",
+      "chain_callable": true,
+      "effects": [],
+      "id_projection": "",
+      "params_schema": {
+        "properties": {
+          "connection_id": {
+            "default": "",
+            "description": "Which connected organization to use. Omit if only one is connected.",
+            "title": "Connection Id",
+            "type": "string"
+          },
+          "folder_id": {
+            "default": "",
+            "description": "Orchestrator Folder ID. Omit to use the connection's default folder.",
+            "title": "Folder Id",
+            "type": "string"
+          },
+          "schedule_id": {
+            "description": "Schedule (trigger) id, from list_schedules.",
+            "title": "Schedule Id",
+            "type": "string"
+          },
+          "enabled": {
+            "description": "True to enable, False to disable the schedule.",
+            "title": "Enabled",
+            "type": "boolean"
+          }
+        },
+        "required": [
+          "schedule_id",
+          "enabled"
+        ],
+        "title": "SetScheduleEnabledParams",
+        "type": "object"
+      },
+      "return_schema": {
+        "properties": {
+          "id": {
+            "default": "",
+            "title": "Id",
+            "type": "string"
+          },
+          "title": {
+            "default": "",
+            "title": "Title",
+            "type": "string"
+          },
+          "kind": {
+            "default": "",
+            "title": "Kind",
+            "type": "string"
+          },
+          "subtitle": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Subtitle"
+          },
+          "description": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Description"
+          },
+          "status": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Status"
+          },
+          "url": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Url"
+          },
+          "enabled": {
+            "default": false,
+            "title": "Enabled",
+            "type": "boolean"
+          },
+          "cron_expression": {
+            "default": "",
+            "title": "Cron Expression",
+            "type": "string"
+          },
+          "process_key": {
+            "default": "",
+            "title": "Process Key",
+            "type": "string"
+          }
+        },
+        "title": "OrchestratorSchedule",
+        "type": "object",
+        "x-sdl": "entity"
+      },
+      "event": "uipath-connector.set_schedule_enabled",
+      "background": false,
+      "long_running": false,
+      "scopes": [],
+      "owner_chat_tool": "uipath"
+    },
+    {
+      "name": "run_schedule",
+      "description": "Run a Process Schedule (Trigger) right now, regardless of its cron timing.",
+      "action_type": "write",
+      "chain_callable": true,
+      "effects": [],
+      "id_projection": "",
+      "params_schema": {
+        "properties": {
+          "connection_id": {
+            "default": "",
+            "description": "Which connected organization to use. Omit if only one is connected.",
+            "title": "Connection Id",
+            "type": "string"
+          },
+          "folder_id": {
+            "default": "",
+            "description": "Orchestrator Folder ID. Omit to use the connection's default folder.",
+            "title": "Folder Id",
+            "type": "string"
+          },
+          "schedule_id": {
+            "description": "Schedule (trigger) id, from list_schedules.",
+            "title": "Schedule Id",
+            "type": "string"
+          }
+        },
+        "required": [
+          "schedule_id"
+        ],
+        "title": "RunScheduleParams",
+        "type": "object"
+      },
+      "return_schema": {
+        "description": "Explicit empty params model -- V17 disallows untyped handlers.",
+        "properties": {},
+        "title": "NoParams",
+        "type": "object"
+      },
+      "event": "uipath-connector.run_schedule",
+      "background": false,
+      "long_running": false,
+      "scopes": [],
+      "owner_chat_tool": "uipath"
+    },
+    {
+      "name": "list_buckets",
+      "description": "List Storage Buckets (Orchestrator's own file storage a process can read/write files from) configured in a Folder.",
+      "action_type": "read",
+      "chain_callable": true,
+      "effects": [],
+      "id_projection": "",
+      "params_schema": {
+        "properties": {
+          "connection_id": {
+            "default": "",
+            "description": "Which connected organization to use. Omit if only one is connected.",
+            "title": "Connection Id",
+            "type": "string"
+          },
+          "folder_id": {
+            "default": "",
+            "description": "Orchestrator Folder ID. Omit to use the connection's default folder.",
+            "title": "Folder Id",
+            "type": "string"
+          }
+        },
+        "title": "ListBucketsParams",
+        "type": "object"
+      },
+      "return_schema": {
+        "$defs": {
+          "OrchestratorBucket": {
+            "properties": {
+              "id": {
+                "default": "",
+                "title": "Id",
+                "type": "string"
+              },
+              "title": {
+                "default": "",
+                "title": "Title",
+                "type": "string"
+              },
+              "kind": {
+                "default": "",
+                "title": "Kind",
+                "type": "string"
+              },
+              "subtitle": {
+                "anyOf": [
+                  {
+                    "type": "string"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ],
+                "default": null,
+                "title": "Subtitle"
+              },
+              "description": {
+                "default": "",
+                "title": "Description",
+                "type": "string"
+              },
+              "status": {
+                "anyOf": [
+                  {
+                    "type": "string"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ],
+                "default": null,
+                "title": "Status"
+              },
+              "url": {
+                "anyOf": [
+                  {
+                    "type": "string"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ],
+                "default": null,
+                "title": "Url"
+              },
+              "identifier": {
+                "default": "",
+                "title": "Identifier",
+                "type": "string"
+              }
+            },
+            "title": "OrchestratorBucket",
+            "type": "object",
+            "x-sdl": "entity"
+          }
+        },
+        "properties": {
+          "id": {
+            "default": "orchestrator_bucket_list",
+            "title": "Id",
+            "type": "string"
+          },
+          "title": {
+            "default": "",
+            "title": "Title",
+            "type": "string"
+          },
+          "kind": {
+            "default": "",
+            "title": "Kind",
+            "type": "string"
+          },
+          "subtitle": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Subtitle"
+          },
+          "description": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Description"
+          },
+          "status": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Status"
+          },
+          "url": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Url"
+          },
+          "items": {
+            "items": {
+              "$ref": "#/$defs/OrchestratorBucket"
+            },
+            "title": "Items",
+            "type": "array"
+          }
+        },
+        "title": "OrchestratorBucketList",
+        "type": "object",
+        "x-sdl": "entity"
+      },
+      "event": "uipath-connector.list_buckets",
+      "background": false,
+      "long_running": false,
+      "scopes": [],
+      "owner_chat_tool": "uipath"
+    },
+    {
+      "name": "list_bucket_files",
+      "description": "List files stored inside one Storage Bucket, optionally under a directory path.",
+      "action_type": "read",
+      "chain_callable": true,
+      "effects": [],
+      "id_projection": "",
+      "params_schema": {
+        "properties": {
+          "connection_id": {
+            "default": "",
+            "description": "Which connected organization to use. Omit if only one is connected.",
+            "title": "Connection Id",
+            "type": "string"
+          },
+          "folder_id": {
+            "default": "",
+            "description": "Orchestrator Folder ID. Omit to use the connection's default folder.",
+            "title": "Folder Id",
+            "type": "string"
+          },
+          "bucket_id": {
+            "description": "Bucket id, from list_buckets.",
+            "title": "Bucket Id",
+            "type": "string"
+          },
+          "prefix": {
+            "default": "",
+            "description": "Optional path prefix to filter files under.",
+            "title": "Prefix",
+            "type": "string"
+          }
+        },
+        "required": [
+          "bucket_id"
+        ],
+        "title": "ListBucketFilesParams",
+        "type": "object"
+      },
+      "return_schema": {
+        "$defs": {
+          "BucketFile": {
+            "properties": {
+              "id": {
+                "default": "",
+                "title": "Id",
+                "type": "string"
+              },
+              "title": {
+                "default": "",
+                "title": "Title",
+                "type": "string"
+              },
+              "kind": {
+                "default": "",
+                "title": "Kind",
+                "type": "string"
+              },
+              "subtitle": {
+                "anyOf": [
+                  {
+                    "type": "string"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ],
+                "default": null,
+                "title": "Subtitle"
+              },
+              "description": {
+                "anyOf": [
+                  {
+                    "type": "string"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ],
+                "default": null,
+                "title": "Description"
+              },
+              "status": {
+                "anyOf": [
+                  {
+                    "type": "string"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ],
+                "default": null,
+                "title": "Status"
+              },
+              "url": {
+                "anyOf": [
+                  {
+                    "type": "string"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ],
+                "default": null,
+                "title": "Url"
+              },
+              "full_path": {
+                "default": "",
+                "title": "Full Path",
+                "type": "string"
+              },
+              "content_type": {
+                "default": "",
+                "title": "Content Type",
+                "type": "string"
+              },
+              "size": {
+                "default": 0,
+                "title": "Size",
+                "type": "integer"
+              }
+            },
+            "title": "BucketFile",
+            "type": "object",
+            "x-sdl": "entity"
+          }
+        },
+        "properties": {
+          "id": {
+            "default": "bucket_file_list",
+            "title": "Id",
+            "type": "string"
+          },
+          "title": {
+            "default": "",
+            "title": "Title",
+            "type": "string"
+          },
+          "kind": {
+            "default": "",
+            "title": "Kind",
+            "type": "string"
+          },
+          "subtitle": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Subtitle"
+          },
+          "description": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Description"
+          },
+          "status": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Status"
+          },
+          "url": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Url"
+          },
+          "items": {
+            "items": {
+              "$ref": "#/$defs/BucketFile"
+            },
+            "title": "Items",
+            "type": "array"
+          }
+        },
+        "title": "BucketFileList",
+        "type": "object",
+        "x-sdl": "entity"
+      },
+      "event": "uipath-connector.list_bucket_files",
+      "background": false,
+      "long_running": false,
+      "scopes": [],
+      "owner_chat_tool": "uipath"
+    },
+    {
+      "name": "get_bucket_file_read_uri",
+      "description": "Get a signed, time-limited download URL for one file inside a Storage Bucket.",
+      "action_type": "read",
+      "chain_callable": true,
+      "effects": [],
+      "id_projection": "",
+      "params_schema": {
+        "properties": {
+          "connection_id": {
+            "default": "",
+            "description": "Which connected organization to use. Omit if only one is connected.",
+            "title": "Connection Id",
+            "type": "string"
+          },
+          "folder_id": {
+            "default": "",
+            "description": "Orchestrator Folder ID. Omit to use the connection's default folder.",
+            "title": "Folder Id",
+            "type": "string"
+          },
+          "bucket_id": {
+            "description": "Bucket id, from list_buckets.",
+            "title": "Bucket Id",
+            "type": "string"
+          },
+          "path": {
+            "description": "Full path of the file inside the bucket, from list_bucket_files.",
+            "title": "Path",
+            "type": "string"
+          },
+          "expiry_minutes": {
+            "default": 30,
+            "description": "How many minutes the signed download URL stays valid.",
+            "maximum": 1440,
+            "minimum": 1,
+            "title": "Expiry Minutes",
+            "type": "integer"
+          }
+        },
+        "required": [
+          "bucket_id",
+          "path"
+        ],
+        "title": "GetBucketFileReadUriParams",
+        "type": "object"
+      },
+      "return_schema": {
+        "properties": {
+          "id": {
+            "default": "",
+            "title": "Id",
+            "type": "string"
+          },
+          "title": {
+            "default": "Bucket file download URL",
+            "title": "Title",
+            "type": "string"
+          },
+          "kind": {
+            "default": "",
+            "title": "Kind",
+            "type": "string"
+          },
+          "subtitle": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Subtitle"
+          },
+          "description": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Description"
+          },
+          "status": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Status"
+          },
+          "url": {
+            "default": "",
+            "title": "Url",
+            "type": "string"
+          },
+          "expires_in_minutes": {
+            "default": 30,
+            "title": "Expires In Minutes",
+            "type": "integer"
+          }
+        },
+        "title": "BucketFileReadUri",
+        "type": "object",
+        "x-sdl": "entity"
+      },
+      "event": "uipath-connector.get_bucket_file_read_uri",
+      "background": false,
+      "long_running": false,
+      "scopes": [],
+      "owner_chat_tool": "uipath"
+    },
+    {
+      "name": "list_webhooks",
+      "description": "List Webhooks (Orchestrator's own event push subscriptions) configured on the connected tenant.",
+      "action_type": "read",
+      "chain_callable": true,
+      "effects": [],
+      "id_projection": "",
+      "params_schema": {
+        "properties": {
+          "connection_id": {
+            "default": "",
+            "description": "Which connected organization to use. Omit if only one is connected.",
+            "title": "Connection Id",
+            "type": "string"
+          },
+          "folder_id": {
+            "default": "",
+            "description": "Orchestrator Folder ID. Omit to use the connection's default folder.",
+            "title": "Folder Id",
+            "type": "string"
+          }
+        },
+        "title": "ListWebhooksParams",
+        "type": "object"
+      },
+      "return_schema": {
+        "$defs": {
+          "OrchestratorWebhook": {
+            "properties": {
+              "id": {
+                "default": "",
+                "title": "Id",
+                "type": "string"
+              },
+              "title": {
+                "default": "",
+                "title": "Title",
+                "type": "string"
+              },
+              "kind": {
+                "default": "",
+                "title": "Kind",
+                "type": "string"
+              },
+              "subtitle": {
+                "anyOf": [
+                  {
+                    "type": "string"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ],
+                "default": null,
+                "title": "Subtitle"
+              },
+              "description": {
+                "anyOf": [
+                  {
+                    "type": "string"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ],
+                "default": null,
+                "title": "Description"
+              },
+              "status": {
+                "anyOf": [
+                  {
+                    "type": "string"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ],
+                "default": null,
+                "title": "Status"
+              },
+              "url": {
+                "default": "",
+                "title": "Url",
+                "type": "string"
+              },
+              "enabled": {
+                "default": false,
+                "title": "Enabled",
+                "type": "boolean"
+              }
+            },
+            "title": "OrchestratorWebhook",
+            "type": "object",
+            "x-sdl": "entity"
+          }
+        },
+        "properties": {
+          "id": {
+            "default": "orchestrator_webhook_list",
+            "title": "Id",
+            "type": "string"
+          },
+          "title": {
+            "default": "",
+            "title": "Title",
+            "type": "string"
+          },
+          "kind": {
+            "default": "",
+            "title": "Kind",
+            "type": "string"
+          },
+          "subtitle": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Subtitle"
+          },
+          "description": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Description"
+          },
+          "status": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Status"
+          },
+          "url": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Url"
+          },
+          "items": {
+            "items": {
+              "$ref": "#/$defs/OrchestratorWebhook"
+            },
+            "title": "Items",
+            "type": "array"
+          }
+        },
+        "title": "OrchestratorWebhookList",
+        "type": "object",
+        "x-sdl": "entity"
+      },
+      "event": "uipath-connector.list_webhooks",
+      "background": false,
+      "long_running": false,
+      "scopes": [],
+      "owner_chat_tool": "uipath"
+    },
+    {
+      "name": "create_webhook",
+      "description": "Create a new Webhook subscription: Orchestrator will POST events to your URL as they happen (e.g. job.completed, job.faulted) instead of you having to poll.",
+      "action_type": "write",
+      "chain_callable": true,
+      "effects": [],
+      "id_projection": "",
+      "params_schema": {
+        "properties": {
+          "connection_id": {
+            "default": "",
+            "description": "Which connected organization to use. Omit if only one is connected.",
+            "title": "Connection Id",
+            "type": "string"
+          },
+          "folder_id": {
+            "default": "",
+            "description": "Orchestrator Folder ID. Omit to use the connection's default folder.",
+            "title": "Folder Id",
+            "type": "string"
+          },
+          "url": {
+            "description": "HTTPS endpoint Orchestrator will POST events to.",
+            "title": "Url",
+            "type": "string"
+          },
+          "events": {
+            "description": "Event types to subscribe to (e.g. 'job.completed', 'job.faulted'). Empty means subscribe to all events.",
+            "items": {
+              "type": "string"
+            },
+            "title": "Events",
+            "type": "array"
+          },
+          "secret": {
+            "default": "",
+            "description": "Optional shared secret Orchestrator will sign payloads with.",
+            "title": "Secret",
+            "type": "string"
+          }
+        },
+        "required": [
+          "url"
+        ],
+        "title": "CreateWebhookParams",
+        "type": "object"
+      },
+      "return_schema": {
+        "properties": {
+          "id": {
+            "default": "",
+            "title": "Id",
+            "type": "string"
+          },
+          "title": {
+            "default": "",
+            "title": "Title",
+            "type": "string"
+          },
+          "kind": {
+            "default": "",
+            "title": "Kind",
+            "type": "string"
+          },
+          "subtitle": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Subtitle"
+          },
+          "description": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Description"
+          },
+          "status": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Status"
+          },
+          "url": {
+            "default": "",
+            "title": "Url",
+            "type": "string"
+          },
+          "enabled": {
+            "default": false,
+            "title": "Enabled",
+            "type": "boolean"
+          }
+        },
+        "title": "OrchestratorWebhook",
+        "type": "object",
+        "x-sdl": "entity"
+      },
+      "event": "uipath-connector.create_webhook",
+      "background": false,
+      "long_running": false,
+      "scopes": [],
+      "owner_chat_tool": "uipath"
+    },
+    {
+      "name": "delete_webhook",
+      "description": "Permanently remove a Webhook subscription. Cannot be undone.",
+      "action_type": "write",
+      "chain_callable": true,
+      "effects": [],
+      "id_projection": "",
+      "params_schema": {
+        "properties": {
+          "connection_id": {
+            "default": "",
+            "description": "Which connected organization to use. Omit if only one is connected.",
+            "title": "Connection Id",
+            "type": "string"
+          },
+          "folder_id": {
+            "default": "",
+            "description": "Orchestrator Folder ID. Omit to use the connection's default folder.",
+            "title": "Folder Id",
+            "type": "string"
+          },
+          "webhook_id": {
+            "description": "Webhook id, from list_webhooks.",
+            "title": "Webhook Id",
+            "type": "string"
+          }
+        },
+        "required": [
+          "webhook_id"
+        ],
+        "title": "DeleteWebhookParams",
+        "type": "object"
+      },
+      "return_schema": {
+        "properties": {
+          "id": {
+            "default": "",
+            "title": "Id",
+            "type": "string"
+          },
+          "title": {
+            "default": "",
+            "title": "Title",
+            "type": "string"
+          },
+          "kind": {
+            "default": "",
+            "title": "Kind",
+            "type": "string"
+          },
+          "subtitle": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Subtitle"
+          },
+          "description": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Description"
+          },
+          "status": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Status"
+          },
+          "url": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Url"
+          },
+          "ok": {
+            "default": true,
+            "title": "Ok",
+            "type": "boolean"
+          }
+        },
+        "title": "DeleteResult",
+        "type": "object",
+        "x-sdl": "entity"
+      },
+      "event": "uipath-connector.delete_webhook",
+      "background": false,
+      "long_running": false,
+      "scopes": [],
+      "owner_chat_tool": "uipath"
+    },
+    {
+      "name": "list_users",
+      "description": "List Users registered in the connected UiPath Automation Cloud organization.",
+      "action_type": "read",
+      "chain_callable": true,
+      "effects": [],
+      "id_projection": "",
+      "params_schema": {
+        "properties": {
+          "connection_id": {
+            "default": "",
+            "description": "Which connected organization to use. Omit if only one is connected.",
+            "title": "Connection Id",
+            "type": "string"
+          }
+        },
+        "title": "ListUsersParams",
+        "type": "object"
+      },
+      "return_schema": {
+        "$defs": {
+          "OrchestratorUser": {
+            "properties": {
+              "id": {
+                "default": "",
+                "title": "Id",
+                "type": "string"
+              },
+              "title": {
+                "default": "",
+                "title": "Title",
+                "type": "string"
+              },
+              "kind": {
+                "default": "",
+                "title": "Kind",
+                "type": "string"
+              },
+              "subtitle": {
+                "anyOf": [
+                  {
+                    "type": "string"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ],
+                "default": null,
+                "title": "Subtitle"
+              },
+              "description": {
+                "anyOf": [
+                  {
+                    "type": "string"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ],
+                "default": null,
+                "title": "Description"
+              },
+              "status": {
+                "anyOf": [
+                  {
+                    "type": "string"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ],
+                "default": null,
+                "title": "Status"
+              },
+              "url": {
+                "anyOf": [
+                  {
+                    "type": "string"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ],
+                "default": null,
+                "title": "Url"
+              },
+              "username": {
+                "default": "",
+                "title": "Username",
+                "type": "string"
+              },
+              "email": {
+                "default": "",
+                "title": "Email",
+                "type": "string"
+              },
+              "is_active": {
+                "default": true,
+                "title": "Is Active",
+                "type": "boolean"
+              }
+            },
+            "title": "OrchestratorUser",
+            "type": "object",
+            "x-sdl": "entity"
+          }
+        },
+        "properties": {
+          "id": {
+            "default": "orchestrator_user_list",
+            "title": "Id",
+            "type": "string"
+          },
+          "title": {
+            "default": "",
+            "title": "Title",
+            "type": "string"
+          },
+          "kind": {
+            "default": "",
+            "title": "Kind",
+            "type": "string"
+          },
+          "subtitle": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Subtitle"
+          },
+          "description": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Description"
+          },
+          "status": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Status"
+          },
+          "url": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Url"
+          },
+          "items": {
+            "items": {
+              "$ref": "#/$defs/OrchestratorUser"
+            },
+            "title": "Items",
+            "type": "array"
+          }
+        },
+        "title": "OrchestratorUserList",
+        "type": "object",
+        "x-sdl": "entity"
+      },
+      "event": "uipath-connector.list_users",
+      "background": false,
+      "long_running": false,
+      "scopes": [],
+      "owner_chat_tool": "uipath"
+    },
+    {
+      "name": "list_audit_logs",
+      "description": "List Audit Log entries -- Orchestrator's own record of who did what and when -- for a Folder.",
+      "action_type": "read",
+      "chain_callable": true,
+      "effects": [],
+      "id_projection": "",
+      "params_schema": {
+        "properties": {
+          "connection_id": {
+            "default": "",
+            "description": "Which connected organization to use. Omit if only one is connected.",
+            "title": "Connection Id",
+            "type": "string"
+          },
+          "folder_id": {
+            "default": "",
+            "description": "Orchestrator Folder ID. Omit to use the connection's default folder.",
+            "title": "Folder Id",
+            "type": "string"
+          }
+        },
+        "title": "ListAuditLogsParams",
+        "type": "object"
+      },
+      "return_schema": {
+        "$defs": {
+          "OrchestratorAuditLogEntry": {
+            "properties": {
+              "id": {
+                "default": "",
+                "title": "Id",
+                "type": "string"
+              },
+              "title": {
+                "default": "",
+                "title": "Title",
+                "type": "string"
+              },
+              "kind": {
+                "default": "",
+                "title": "Kind",
+                "type": "string"
+              },
+              "subtitle": {
+                "anyOf": [
+                  {
+                    "type": "string"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ],
+                "default": null,
+                "title": "Subtitle"
+              },
+              "description": {
+                "anyOf": [
+                  {
+                    "type": "string"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ],
+                "default": null,
+                "title": "Description"
+              },
+              "status": {
+                "anyOf": [
+                  {
+                    "type": "string"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ],
+                "default": null,
+                "title": "Status"
+              },
+              "url": {
+                "anyOf": [
+                  {
+                    "type": "string"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ],
+                "default": null,
+                "title": "Url"
+              },
+              "component": {
+                "default": "",
+                "title": "Component",
+                "type": "string"
+              },
+              "action": {
+                "default": "",
+                "title": "Action",
+                "type": "string"
+              },
+              "execution_time": {
+                "default": "",
+                "title": "Execution Time",
+                "type": "string"
+              },
+              "user_name": {
+                "default": "",
+                "title": "User Name",
+                "type": "string"
+              }
+            },
+            "title": "OrchestratorAuditLogEntry",
+            "type": "object",
+            "x-sdl": "entity"
+          }
+        },
+        "properties": {
+          "id": {
+            "default": "orchestrator_audit_log_list",
+            "title": "Id",
+            "type": "string"
+          },
+          "title": {
+            "default": "",
+            "title": "Title",
+            "type": "string"
+          },
+          "kind": {
+            "default": "",
+            "title": "Kind",
+            "type": "string"
+          },
+          "subtitle": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Subtitle"
+          },
+          "description": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Description"
+          },
+          "status": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Status"
+          },
+          "url": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Url"
+          },
+          "items": {
+            "items": {
+              "$ref": "#/$defs/OrchestratorAuditLogEntry"
+            },
+            "title": "Items",
+            "type": "array"
+          }
+        },
+        "title": "OrchestratorAuditLogList",
+        "type": "object",
+        "x-sdl": "entity"
+      },
+      "event": "uipath-connector.list_audit_logs",
+      "background": false,
+      "long_running": false,
+      "scopes": [],
+      "owner_chat_tool": "uipath"
     }
   ],
   "signals": [],
@@ -3256,7 +6120,26 @@
       "get_asset": 8,
       "set_asset_value": 16,
       "bulk_stop_jobs": 60,
-      "audit_folder": 40
+      "audit_folder": 40,
+      "list_folders": 8,
+      "get_folder": 8,
+      "list_machines": 8,
+      "get_machine": 8,
+      "list_environments": 8,
+      "list_libraries": 8,
+      "get_library": 8,
+      "list_schedules": 8,
+      "get_schedule": 8,
+      "set_schedule_enabled": 16,
+      "run_schedule": 20,
+      "list_buckets": 8,
+      "list_bucket_files": 8,
+      "get_bucket_file_read_uri": 8,
+      "list_webhooks": 8,
+      "create_webhook": 16,
+      "delete_webhook": 16,
+      "list_users": 8,
+      "list_audit_logs": 8
     },
     "notes": "Fixed platform scale {0,8,16,20,40,60} per canonical PRICING_POLICY.md. Not a Google-backed app, no x1.8 markup."
   }

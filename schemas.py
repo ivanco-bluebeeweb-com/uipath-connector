@@ -339,3 +339,299 @@ class FolderAuditReport(sdl.Entity):
     total_processes: int = 0
     total_running_jobs: int = 0
     total_faulted_24h: int = 0
+
+
+# ──────────────────────────────────────────────────────────────────────────
+# Folders
+# ──────────────────────────────────────────────────────────────────────────
+
+
+class ListFoldersParams(BaseModel):
+    connection_id: str = Field("", description="Which connected organization to use. Omit if only one is connected.")
+
+
+class OrchestratorFolder(sdl.Entity):
+    id: str = ""
+    title: str = ""
+    fully_qualified_name: str = ""
+    description: str = ""
+    folder_type: str = ""
+
+
+class OrchestratorFolderList(sdl.Entity):
+    id: str = "orchestrator_folder_list"
+    title: str = ""
+    items: list[OrchestratorFolder] = Field(default_factory=list)
+
+
+class GetFolderParams(BaseModel):
+    connection_id: str = Field("", description="Which connected organization to use. Omit if only one is connected.")
+    folder_id: str = Field(..., description="Folder id, from list_folders.")
+
+
+# ──────────────────────────────────────────────────────────────────────────
+# Machines
+# ──────────────────────────────────────────────────────────────────────────
+
+
+class ListMachinesParams(BaseModel):
+    connection_id: str = Field("", description="Which connected organization to use. Omit if only one is connected.")
+    folder_id: str = Field("", description="Orchestrator Folder ID. Omit to use the connection's default folder.")
+
+
+class OrchestratorMachine(sdl.Entity):
+    id: str = ""
+    title: str = ""
+    machine_type: str = ""
+    non_production_slots: int = 0
+    unattended_slots: int = 0
+
+
+class OrchestratorMachineList(sdl.Entity):
+    id: str = "orchestrator_machine_list"
+    title: str = ""
+    items: list[OrchestratorMachine] = Field(default_factory=list)
+
+
+class GetMachineParams(BaseModel):
+    connection_id: str = Field("", description="Which connected organization to use. Omit if only one is connected.")
+    folder_id: str = Field("", description="Orchestrator Folder ID. Omit to use the connection's default folder.")
+    machine_id: str = Field(..., description="Machine id, from list_machines.")
+
+
+# ──────────────────────────────────────────────────────────────────────────
+# Environments
+# ──────────────────────────────────────────────────────────────────────────
+
+
+class ListEnvironmentsParams(BaseModel):
+    connection_id: str = Field("", description="Which connected organization to use. Omit if only one is connected.")
+    folder_id: str = Field("", description="Orchestrator Folder ID. Omit to use the connection's default folder.")
+
+
+class OrchestratorEnvironment(sdl.Entity):
+    id: str = ""
+    title: str = ""
+    description: str = ""
+
+
+class OrchestratorEnvironmentList(sdl.Entity):
+    id: str = "orchestrator_environment_list"
+    title: str = ""
+    items: list[OrchestratorEnvironment] = Field(default_factory=list)
+
+
+# ──────────────────────────────────────────────────────────────────────────
+# Libraries
+# ──────────────────────────────────────────────────────────────────────────
+
+
+class ListLibrariesParams(BaseModel):
+    connection_id: str = Field("", description="Which connected organization to use. Omit if only one is connected.")
+    folder_id: str = Field("", description="Orchestrator Folder ID. Omit to use the connection's default folder.")
+
+
+class OrchestratorLibrary(sdl.Entity):
+    id: str = ""
+    title: str = ""
+    version: str = ""
+    description: str = ""
+
+
+class OrchestratorLibraryList(sdl.Entity):
+    id: str = "orchestrator_library_list"
+    title: str = ""
+    items: list[OrchestratorLibrary] = Field(default_factory=list)
+
+
+class GetLibraryParams(BaseModel):
+    connection_id: str = Field("", description="Which connected organization to use. Omit if only one is connected.")
+    folder_id: str = Field("", description="Orchestrator Folder ID. Omit to use the connection's default folder.")
+    library_id: str = Field(..., description="Library id, from list_libraries.")
+
+
+# ──────────────────────────────────────────────────────────────────────────
+# Process Schedules (Triggers)
+# ──────────────────────────────────────────────────────────────────────────
+
+
+class ListSchedulesParams(BaseModel):
+    connection_id: str = Field("", description="Which connected organization to use. Omit if only one is connected.")
+    folder_id: str = Field("", description="Orchestrator Folder ID. Omit to use the connection's default folder.")
+
+
+class OrchestratorSchedule(sdl.Entity):
+    id: str = ""
+    title: str = ""
+    enabled: bool = False
+    cron_expression: str = ""
+    process_key: str = ""
+
+
+class OrchestratorScheduleList(sdl.Entity):
+    id: str = "orchestrator_schedule_list"
+    title: str = ""
+    items: list[OrchestratorSchedule] = Field(default_factory=list)
+
+
+class SetScheduleEnabledParams(BaseModel):
+    connection_id: str = Field("", description="Which connected organization to use. Omit if only one is connected.")
+    folder_id: str = Field("", description="Orchestrator Folder ID. Omit to use the connection's default folder.")
+    schedule_id: str = Field(..., description="Schedule (trigger) id, from list_schedules.")
+    enabled: bool = Field(..., description="True to enable, False to disable the schedule.")
+
+
+class GetScheduleParams(BaseModel):
+    connection_id: str = Field("", description="Which connected organization to use. Omit if only one is connected.")
+    folder_id: str = Field("", description="Orchestrator Folder ID. Omit to use the connection's default folder.")
+    schedule_id: str = Field(..., description="Schedule (trigger) id, from list_schedules.")
+
+
+class RunScheduleParams(BaseModel):
+    connection_id: str = Field("", description="Which connected organization to use. Omit if only one is connected.")
+    folder_id: str = Field("", description="Orchestrator Folder ID. Omit to use the connection's default folder.")
+    schedule_id: str = Field(..., description="Schedule (trigger) id, from list_schedules.")
+
+
+# ──────────────────────────────────────────────────────────────────────────
+# Storage Buckets
+# ──────────────────────────────────────────────────────────────────────────
+
+
+class ListBucketsParams(BaseModel):
+    connection_id: str = Field("", description="Which connected organization to use. Omit if only one is connected.")
+    folder_id: str = Field("", description="Orchestrator Folder ID. Omit to use the connection's default folder.")
+
+
+class OrchestratorBucket(sdl.Entity):
+    id: str = ""
+    title: str = ""
+    description: str = ""
+    identifier: str = ""
+
+
+class OrchestratorBucketList(sdl.Entity):
+    id: str = "orchestrator_bucket_list"
+    title: str = ""
+    items: list[OrchestratorBucket] = Field(default_factory=list)
+
+
+class ListBucketFilesParams(BaseModel):
+    connection_id: str = Field("", description="Which connected organization to use. Omit if only one is connected.")
+    folder_id: str = Field("", description="Orchestrator Folder ID. Omit to use the connection's default folder.")
+    bucket_id: str = Field(..., description="Bucket id, from list_buckets.")
+    prefix: str = Field("", description="Optional path prefix to filter files under.")
+
+
+class BucketFile(sdl.Entity):
+    id: str = ""
+    title: str = ""
+    full_path: str = ""
+    content_type: str = ""
+    size: int = 0
+
+
+class BucketFileList(sdl.Entity):
+    id: str = "bucket_file_list"
+    title: str = ""
+    items: list[BucketFile] = Field(default_factory=list)
+
+
+class GetBucketFileReadUriParams(BaseModel):
+    connection_id: str = Field("", description="Which connected organization to use. Omit if only one is connected.")
+    folder_id: str = Field("", description="Orchestrator Folder ID. Omit to use the connection's default folder.")
+    bucket_id: str = Field(..., description="Bucket id, from list_buckets.")
+    path: str = Field(..., description="Full path of the file inside the bucket, from list_bucket_files.")
+    expiry_minutes: int = Field(30, ge=1, le=1440, description="How many minutes the signed download URL stays valid.")
+
+
+class BucketFileReadUri(sdl.Entity):
+    id: str = ""
+    title: str = "Bucket file download URL"
+    url: str = ""
+    expires_in_minutes: int = 30
+
+
+# ──────────────────────────────────────────────────────────────────────────
+# Webhooks
+# ──────────────────────────────────────────────────────────────────────────
+
+
+class ListWebhooksParams(BaseModel):
+    connection_id: str = Field("", description="Which connected organization to use. Omit if only one is connected.")
+    folder_id: str = Field("", description="Orchestrator Folder ID. Omit to use the connection's default folder.")
+
+
+class OrchestratorWebhook(sdl.Entity):
+    id: str = ""
+    title: str = ""
+    url: str = ""
+    enabled: bool = False
+
+
+class OrchestratorWebhookList(sdl.Entity):
+    id: str = "orchestrator_webhook_list"
+    title: str = ""
+    items: list[OrchestratorWebhook] = Field(default_factory=list)
+
+
+class CreateWebhookParams(BaseModel):
+    connection_id: str = Field("", description="Which connected organization to use. Omit if only one is connected.")
+    folder_id: str = Field("", description="Orchestrator Folder ID. Omit to use the connection's default folder.")
+    url: str = Field(..., description="HTTPS endpoint Orchestrator will POST events to.")
+    events: list[str] = Field(default_factory=list, description="Event types to subscribe to (e.g. 'job.completed', 'job.faulted'). Empty means subscribe to all events.")
+    secret: str = Field("", description="Optional shared secret Orchestrator will sign payloads with.")
+
+
+class DeleteWebhookParams(BaseModel):
+    connection_id: str = Field("", description="Which connected organization to use. Omit if only one is connected.")
+    folder_id: str = Field("", description="Orchestrator Folder ID. Omit to use the connection's default folder.")
+    webhook_id: str = Field(..., description="Webhook id, from list_webhooks.")
+
+
+# ──────────────────────────────────────────────────────────────────────────
+# Users
+# ──────────────────────────────────────────────────────────────────────────
+
+
+class ListUsersParams(BaseModel):
+    connection_id: str = Field("", description="Which connected organization to use. Omit if only one is connected.")
+
+
+class OrchestratorUser(sdl.Entity):
+    id: str = ""
+    title: str = ""
+    username: str = ""
+    email: str = ""
+    is_active: bool = True
+
+
+class OrchestratorUserList(sdl.Entity):
+    id: str = "orchestrator_user_list"
+    title: str = ""
+    items: list[OrchestratorUser] = Field(default_factory=list)
+
+
+# ──────────────────────────────────────────────────────────────────────────
+# Audit Logs
+# ──────────────────────────────────────────────────────────────────────────
+
+
+class ListAuditLogsParams(BaseModel):
+    connection_id: str = Field("", description="Which connected organization to use. Omit if only one is connected.")
+    folder_id: str = Field("", description="Orchestrator Folder ID. Omit to use the connection's default folder.")
+
+
+class OrchestratorAuditLogEntry(sdl.Entity):
+    id: str = ""
+    title: str = ""
+    component: str = ""
+    action: str = ""
+    execution_time: str = ""
+    user_name: str = ""
+
+
+class OrchestratorAuditLogList(sdl.Entity):
+    id: str = "orchestrator_audit_log_list"
+    title: str = ""
+    items: list[OrchestratorAuditLogEntry] = Field(default_factory=list)

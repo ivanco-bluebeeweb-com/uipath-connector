@@ -361,3 +361,227 @@ async def bulk_stop_jobs(
         except ClientFail as e:
             results.append({"job_id": job_id, "ok": False, "error": e.payload.get("error")})
     return results
+
+
+# ──────────────────────────────────────────────────────────────────────────
+# Folders (Orchestrator's multi-tenant organizational units -- the modern
+# replacement for "organization units"; every resource above is scoped to
+# one, so listing/reading them is what lets a caller discover valid
+# folder_id values instead of having to already know one)
+# ──────────────────────────────────────────────────────────────────────────
+
+
+async def list_folders(ctx, access_token: str, organization_name: str, tenant_name: str) -> list[dict]:
+    resp = await ctx.http.get(
+        f"{_orch_base(organization_name, tenant_name)}/Folders",
+        headers=_headers(access_token, ""),
+    )
+    body = _check_status(resp, "list folders")
+    return body.get("value", []) if isinstance(body, dict) else (body or [])
+
+
+async def get_folder(ctx, access_token: str, organization_name: str, tenant_name: str, folder_id: str) -> dict:
+    resp = await ctx.http.get(
+        f"{_orch_base(organization_name, tenant_name)}/Folders({folder_id})",
+        headers=_headers(access_token, ""),
+    )
+    return _check_status(resp, "get folder")
+
+
+# ──────────────────────────────────────────────────────────────────────────
+# Machines (the machine templates/runtimes robots run on)
+# ──────────────────────────────────────────────────────────────────────────
+
+
+async def list_machines(ctx, access_token: str, organization_name: str, tenant_name: str, folder_id: str) -> list[dict]:
+    resp = await ctx.http.get(
+        f"{_orch_base(organization_name, tenant_name)}/Machines",
+        headers=_headers(access_token, folder_id),
+    )
+    body = _check_status(resp, "list machines")
+    return body.get("value", []) if isinstance(body, dict) else (body or [])
+
+
+async def get_machine(ctx, access_token: str, organization_name: str, tenant_name: str, folder_id: str, machine_id: str) -> dict:
+    resp = await ctx.http.get(
+        f"{_orch_base(organization_name, tenant_name)}/Machines({machine_id})",
+        headers=_headers(access_token, folder_id),
+    )
+    return _check_status(resp, "get machine")
+
+
+# ──────────────────────────────────────────────────────────────────────────
+# Environments (classic robot groupings within a Folder)
+# ──────────────────────────────────────────────────────────────────────────
+
+
+async def list_environments(ctx, access_token: str, organization_name: str, tenant_name: str, folder_id: str) -> list[dict]:
+    resp = await ctx.http.get(
+        f"{_orch_base(organization_name, tenant_name)}/Environments",
+        headers=_headers(access_token, folder_id),
+    )
+    body = _check_status(resp, "list environments")
+    return body.get("value", []) if isinstance(body, dict) else (body or [])
+
+
+# ──────────────────────────────────────────────────────────────────────────
+# Libraries (published reusable automation packages, distinct from
+# Processes/Releases which are the runnable, versioned deployments of them)
+# ──────────────────────────────────────────────────────────────────────────
+
+
+async def list_libraries(ctx, access_token: str, organization_name: str, tenant_name: str, folder_id: str) -> list[dict]:
+    resp = await ctx.http.get(
+        f"{_orch_base(organization_name, tenant_name)}/Libraries",
+        headers=_headers(access_token, folder_id),
+    )
+    body = _check_status(resp, "list libraries")
+    return body.get("value", []) if isinstance(body, dict) else (body or [])
+
+
+async def get_library(ctx, access_token: str, organization_name: str, tenant_name: str, folder_id: str, library_id: str) -> dict:
+    resp = await ctx.http.get(
+        f"{_orch_base(organization_name, tenant_name)}/Libraries({library_id})",
+        headers=_headers(access_token, folder_id),
+    )
+    return _check_status(resp, "get library")
+
+
+# ──────────────────────────────────────────────────────────────────────────
+# Schedules (ProcessSchedules -- time-based triggers for a process)
+# ──────────────────────────────────────────────────────────────────────────
+
+
+async def list_schedules(ctx, access_token: str, organization_name: str, tenant_name: str, folder_id: str) -> list[dict]:
+    resp = await ctx.http.get(
+        f"{_orch_base(organization_name, tenant_name)}/ProcessSchedules",
+        headers=_headers(access_token, folder_id),
+    )
+    body = _check_status(resp, "list schedules")
+    return body.get("value", []) if isinstance(body, dict) else (body or [])
+
+
+async def get_schedule(ctx, access_token: str, organization_name: str, tenant_name: str, folder_id: str, schedule_id: str) -> dict:
+    resp = await ctx.http.get(
+        f"{_orch_base(organization_name, tenant_name)}/ProcessSchedules({schedule_id})",
+        headers=_headers(access_token, folder_id),
+    )
+    return _check_status(resp, "get schedule")
+
+
+async def set_schedule_enabled(
+    ctx, access_token: str, organization_name: str, tenant_name: str, folder_id: str, schedule_id: str, enabled: bool,
+) -> dict:
+    resp = await ctx.http.patch(
+        f"{_orch_base(organization_name, tenant_name)}/ProcessSchedules({schedule_id})",
+        headers=_headers(access_token, folder_id),
+        json={"Enabled": enabled},
+    )
+    return _check_status(resp, "set schedule enabled")
+
+
+async def run_schedule_now(ctx, access_token: str, organization_name: str, tenant_name: str, folder_id: str, schedule_id: str) -> dict:
+    resp = await ctx.http.post(
+        f"{_orch_base(organization_name, tenant_name)}/ProcessSchedules({schedule_id})/UiPath.Server.Configuration.OData.RunNow",
+        headers=_headers(access_token, folder_id),
+        json={},
+    )
+    return _check_status(resp, "run schedule now")
+
+
+# ──────────────────────────────────────────────────────────────────────────
+# Buckets (Orchestrator's own file storage a process can read/write files
+# from -- distinct from Assets, which hold small config values/credentials)
+# ──────────────────────────────────────────────────────────────────────────
+
+
+async def list_buckets(ctx, access_token: str, organization_name: str, tenant_name: str, folder_id: str) -> list[dict]:
+    resp = await ctx.http.get(
+        f"{_orch_base(organization_name, tenant_name)}/Buckets",
+        headers=_headers(access_token, folder_id),
+    )
+    body = _check_status(resp, "list buckets")
+    return body.get("value", []) if isinstance(body, dict) else (body or [])
+
+
+async def list_bucket_files(
+    ctx, access_token: str, organization_name: str, tenant_name: str, folder_id: str, bucket_id: str, directory_path: str = "/",
+) -> list[dict]:
+    resp = await ctx.http.get(
+        f"{_orch_base(organization_name, tenant_name)}/Buckets({bucket_id})/UiPath.Server.Configuration.OData.GetFiles(directoryPath='{directory_path}')",
+        headers=_headers(access_token, folder_id),
+    )
+    body = _check_status(resp, "list bucket files")
+    return body.get("value", []) if isinstance(body, dict) else (body if isinstance(body, list) else [])
+
+
+async def get_bucket_file_read_uri(
+    ctx, access_token: str, organization_name: str, tenant_name: str, folder_id: str, bucket_id: str, path: str, expiry_minutes: int = 30,
+) -> dict:
+    resp = await ctx.http.get(
+        f"{_orch_base(organization_name, tenant_name)}/Buckets({bucket_id})/UiPath.Server.Configuration.OData.GetReadUri(path='{path}',expiryInMinutes={expiry_minutes})",
+        headers=_headers(access_token, folder_id),
+    )
+    return _check_status(resp, "get bucket file read uri")
+
+
+# ──────────────────────────────────────────────────────────────────────────
+# Webhooks (Orchestrator's own event push subscriptions)
+# ──────────────────────────────────────────────────────────────────────────
+
+
+async def list_webhooks(ctx, access_token: str, organization_name: str, tenant_name: str, folder_id: str) -> list[dict]:
+    resp = await ctx.http.get(
+        f"{_orch_base(organization_name, tenant_name)}/Webhooks",
+        headers=_headers(access_token, folder_id),
+    )
+    body = _check_status(resp, "list webhooks")
+    return body.get("value", []) if isinstance(body, dict) else (body or [])
+
+
+async def create_webhook(
+    ctx, access_token: str, organization_name: str, tenant_name: str, folder_id: str, *, url: str, events: list[str], secret: str = "",
+) -> dict:
+    resp = await ctx.http.post(
+        f"{_orch_base(organization_name, tenant_name)}/Webhooks",
+        headers=_headers(access_token, folder_id),
+        json={"Url": url, "Enabled": True, "Events": [{"Type": e} for e in events], "Secret": secret or None, "SubscribeAllEvents": not events},
+    )
+    return _check_status(resp, "create webhook")
+
+
+async def delete_webhook(ctx, access_token: str, organization_name: str, tenant_name: str, folder_id: str, webhook_id: str) -> dict:
+    resp = await ctx.http.delete(
+        f"{_orch_base(organization_name, tenant_name)}/Webhooks({webhook_id})",
+        headers=_headers(access_token, folder_id),
+    )
+    return _check_status(resp, "delete webhook")
+
+
+# ──────────────────────────────────────────────────────────────────────────
+# Users
+# ──────────────────────────────────────────────────────────────────────────
+
+
+async def list_users(ctx, access_token: str, organization_name: str, tenant_name: str) -> list[dict]:
+    resp = await ctx.http.get(
+        f"{_orch_base(organization_name, tenant_name)}/Users",
+        headers=_headers(access_token, ""),
+    )
+    body = _check_status(resp, "list users")
+    return body.get("value", []) if isinstance(body, dict) else (body or [])
+
+
+# ──────────────────────────────────────────────────────────────────────────
+# Audit Logs
+# ──────────────────────────────────────────────────────────────────────────
+
+
+async def list_audit_logs(ctx, access_token: str, organization_name: str, tenant_name: str, folder_id: str, *, top: int = 50) -> list[dict]:
+    resp = await ctx.http.get(
+        f"{_orch_base(organization_name, tenant_name)}/AuditLogs",
+        headers=_headers(access_token, folder_id),
+        params={"$top": top, "$orderby": "ExecutionTime desc"},
+    )
+    body = _check_status(resp, "list audit logs")
+    return body.get("value", []) if isinstance(body, dict) else (body or [])
