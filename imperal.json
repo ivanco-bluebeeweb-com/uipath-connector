@@ -3193,7 +3193,7 @@
       "slot": "left",
       "title": "UiPath",
       "tree": {},
-      "icon": "🤖",
+      "icon": "\ud83e\udd16",
       "refresh": "manual",
       "center_overlay": false,
       "default_width": 320,
@@ -3214,7 +3214,7 @@
       "slot": "center",
       "title": "UiPath",
       "tree": {},
-      "icon": "🤖",
+      "icon": "\ud83e\udd16",
       "refresh": "manual",
       "center_overlay": true
     },
@@ -3227,5 +3227,37 @@
       "refresh": "manual",
       "center_overlay": false
     }
-  ]
+  ],
+  "pricing": {
+    "model": "per_action",
+    "currency": "tokens",
+    "monthly_price": 0,
+    "free_tools": [
+      "connect_uipath",
+      "list_connections",
+      "disconnect_uipath"
+    ],
+    "tool_prices": {
+      "connect_uipath": 0,
+      "list_connections": 0,
+      "disconnect_uipath": 0,
+      "list_processes": 8,
+      "get_process": 8,
+      "list_jobs": 8,
+      "get_job": 8,
+      "start_job": 20,
+      "stop_job": 16,
+      "list_queues": 8,
+      "list_queue_items": 8,
+      "add_queue_item": 16,
+      "set_queue_item_status": 16,
+      "list_robots": 8,
+      "list_assets": 8,
+      "get_asset": 8,
+      "set_asset_value": 16,
+      "bulk_stop_jobs": 60,
+      "audit_folder": 40
+    },
+    "notes": "Fixed platform scale {0,8,16,20,40,60} per canonical PRICING_POLICY.md. Not a Google-backed app, no x1.8 markup."
+  }
 }

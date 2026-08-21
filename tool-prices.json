@@ -1,0 +1,21 @@
+{
+  "connect_uipath": 0,
+  "list_connections": 0,
+  "disconnect_uipath": 0,
+  "list_processes": 8,
+  "get_process": 8,
+  "list_jobs": 8,
+  "get_job": 8,
+  "start_job": 20,
+  "stop_job": 16,
+  "list_queues": 8,
+  "list_queue_items": 8,
+  "add_queue_item": 16,
+  "set_queue_item_status": 16,
+  "list_robots": 8,
+  "list_assets": 8,
+  "get_asset": 8,
+  "set_asset_value": 16,
+  "bulk_stop_jobs": 60,
+  "audit_folder": 40
+}
