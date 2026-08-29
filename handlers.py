@@ -764,6 +764,7 @@ async def audit_folder(ctx, params: AuditFolderParams) -> ActionResult:
     event="uipath-connector.list_folders",
 )
 async def list_folders(ctx, params: ListFoldersParams) -> ActionResult:
+    """Execute this UiPath Orchestrator operation."""
     resolved = await _get_token_and_conn(ctx, params.connection_id)
     if isinstance(resolved, ActionResult):
         return resolved
@@ -785,6 +786,7 @@ async def list_folders(ctx, params: ListFoldersParams) -> ActionResult:
     event="uipath-connector.get_folder",
 )
 async def get_folder(ctx, params: GetFolderParams) -> ActionResult:
+    """Execute this UiPath Orchestrator operation."""
     resolved = await _get_token_and_conn(ctx, params.connection_id)
     if isinstance(resolved, ActionResult):
         return resolved
@@ -805,6 +807,7 @@ async def get_folder(ctx, params: GetFolderParams) -> ActionResult:
     event="uipath-connector.list_machines",
 )
 async def list_machines(ctx, params: ListMachinesParams) -> ActionResult:
+    """Execute this UiPath Orchestrator operation."""
     resolved = await _get_token_and_conn(ctx, params.connection_id, params.folder_id)
     if isinstance(resolved, ActionResult):
         return resolved
@@ -826,6 +829,7 @@ async def list_machines(ctx, params: ListMachinesParams) -> ActionResult:
     event="uipath-connector.get_machine",
 )
 async def get_machine(ctx, params: GetMachineParams) -> ActionResult:
+    """Execute this UiPath Orchestrator operation."""
     resolved = await _get_token_and_conn(ctx, params.connection_id, params.folder_id)
     if isinstance(resolved, ActionResult):
         return resolved
@@ -846,6 +850,7 @@ async def get_machine(ctx, params: GetMachineParams) -> ActionResult:
     event="uipath-connector.list_environments",
 )
 async def list_environments(ctx, params: ListEnvironmentsParams) -> ActionResult:
+    """Execute this UiPath Orchestrator operation."""
     resolved = await _get_token_and_conn(ctx, params.connection_id, params.folder_id)
     if isinstance(resolved, ActionResult):
         return resolved
@@ -867,6 +872,7 @@ async def list_environments(ctx, params: ListEnvironmentsParams) -> ActionResult
     event="uipath-connector.list_libraries",
 )
 async def list_libraries(ctx, params: ListLibrariesParams) -> ActionResult:
+    """Execute this UiPath Orchestrator operation."""
     resolved = await _get_token_and_conn(ctx, params.connection_id, params.folder_id)
     if isinstance(resolved, ActionResult):
         return resolved
@@ -888,6 +894,7 @@ async def list_libraries(ctx, params: ListLibrariesParams) -> ActionResult:
     event="uipath-connector.get_library",
 )
 async def get_library(ctx, params: GetLibraryParams) -> ActionResult:
+    """Execute this UiPath Orchestrator operation."""
     resolved = await _get_token_and_conn(ctx, params.connection_id, params.folder_id)
     if isinstance(resolved, ActionResult):
         return resolved
@@ -911,6 +918,7 @@ async def get_library(ctx, params: GetLibraryParams) -> ActionResult:
     event="uipath-connector.list_schedules",
 )
 async def list_schedules(ctx, params: ListSchedulesParams) -> ActionResult:
+    """Execute this UiPath Orchestrator operation."""
     resolved = await _get_token_and_conn(ctx, params.connection_id, params.folder_id)
     if isinstance(resolved, ActionResult):
         return resolved
@@ -932,6 +940,7 @@ async def list_schedules(ctx, params: ListSchedulesParams) -> ActionResult:
     event="uipath-connector.get_schedule",
 )
 async def get_schedule(ctx, params: GetScheduleParams) -> ActionResult:
+    """Execute this UiPath Orchestrator operation."""
     resolved = await _get_token_and_conn(ctx, params.connection_id, params.folder_id)
     if isinstance(resolved, ActionResult):
         return resolved
@@ -949,9 +958,11 @@ async def get_schedule(ctx, params: GetScheduleParams) -> ActionResult:
     action_type="write",
     chain_callable=True,
     data_model=OrchestratorSchedule,
+    effects=["update:uipath_schedule"],
     event="uipath-connector.set_schedule_enabled",
 )
 async def set_schedule_enabled(ctx, params: SetScheduleEnabledParams) -> ActionResult:
+    """Execute this UiPath Orchestrator operation."""
     resolved = await _get_token_and_conn(ctx, params.connection_id, params.folder_id)
     if isinstance(resolved, ActionResult):
         return resolved
@@ -969,9 +980,11 @@ async def set_schedule_enabled(ctx, params: SetScheduleEnabledParams) -> ActionR
     action_type="write",
     chain_callable=True,
     data_model=NoParams,
+    effects=["create:uipath_job"],
     event="uipath-connector.run_schedule",
 )
 async def run_schedule(ctx, params: RunScheduleParams) -> ActionResult:
+    """Execute this UiPath Orchestrator operation."""
     resolved = await _get_token_and_conn(ctx, params.connection_id, params.folder_id)
     if isinstance(resolved, ActionResult):
         return resolved
@@ -992,6 +1005,7 @@ async def run_schedule(ctx, params: RunScheduleParams) -> ActionResult:
     event="uipath-connector.list_buckets",
 )
 async def list_buckets(ctx, params: ListBucketsParams) -> ActionResult:
+    """Execute this UiPath Orchestrator operation."""
     resolved = await _get_token_and_conn(ctx, params.connection_id, params.folder_id)
     if isinstance(resolved, ActionResult):
         return resolved
@@ -1013,6 +1027,7 @@ async def list_buckets(ctx, params: ListBucketsParams) -> ActionResult:
     event="uipath-connector.list_bucket_files",
 )
 async def list_bucket_files(ctx, params: ListBucketFilesParams) -> ActionResult:
+    """Execute this UiPath Orchestrator operation."""
     resolved = await _get_token_and_conn(ctx, params.connection_id, params.folder_id)
     if isinstance(resolved, ActionResult):
         return resolved
@@ -1034,6 +1049,7 @@ async def list_bucket_files(ctx, params: ListBucketFilesParams) -> ActionResult:
     event="uipath-connector.get_bucket_file_read_uri",
 )
 async def get_bucket_file_read_uri(ctx, params: GetBucketFileReadUriParams) -> ActionResult:
+    """Execute this UiPath Orchestrator operation."""
     resolved = await _get_token_and_conn(ctx, params.connection_id, params.folder_id)
     if isinstance(resolved, ActionResult):
         return resolved
@@ -1054,6 +1070,7 @@ async def get_bucket_file_read_uri(ctx, params: GetBucketFileReadUriParams) -> A
     event="uipath-connector.list_webhooks",
 )
 async def list_webhooks(ctx, params: ListWebhooksParams) -> ActionResult:
+    """Execute this UiPath Orchestrator operation."""
     resolved = await _get_token_and_conn(ctx, params.connection_id, params.folder_id)
     if isinstance(resolved, ActionResult):
         return resolved
@@ -1073,9 +1090,11 @@ async def list_webhooks(ctx, params: ListWebhooksParams) -> ActionResult:
     action_type="write",
     chain_callable=True,
     data_model=OrchestratorWebhook,
+    effects=["create:uipath_webhook"],
     event="uipath-connector.create_webhook",
 )
 async def create_webhook(ctx, params: CreateWebhookParams) -> ActionResult:
+    """Execute this UiPath Orchestrator operation."""
     resolved = await _get_token_and_conn(ctx, params.connection_id, params.folder_id)
     if isinstance(resolved, ActionResult):
         return resolved
@@ -1093,9 +1112,11 @@ async def create_webhook(ctx, params: CreateWebhookParams) -> ActionResult:
     action_type="write",
     chain_callable=True,
     data_model=DeleteResult,
+    effects=["delete:uipath_webhook"],
     event="uipath-connector.delete_webhook",
 )
 async def delete_webhook(ctx, params: DeleteWebhookParams) -> ActionResult:
+    """Execute this UiPath Orchestrator operation."""
     resolved = await _get_token_and_conn(ctx, params.connection_id, params.folder_id)
     if isinstance(resolved, ActionResult):
         return resolved
@@ -1116,6 +1137,7 @@ async def delete_webhook(ctx, params: DeleteWebhookParams) -> ActionResult:
     event="uipath-connector.list_users",
 )
 async def list_users(ctx, params: ListUsersParams) -> ActionResult:
+    """Execute this UiPath Orchestrator operation."""
     resolved = await _get_token_and_conn(ctx, params.connection_id)
     if isinstance(resolved, ActionResult):
         return resolved
@@ -1137,6 +1159,7 @@ async def list_users(ctx, params: ListUsersParams) -> ActionResult:
     event="uipath-connector.list_audit_logs",
 )
 async def list_audit_logs(ctx, params: ListAuditLogsParams) -> ActionResult:
+    """Execute this UiPath Orchestrator operation."""
     resolved = await _get_token_and_conn(ctx, params.connection_id, params.folder_id)
     if isinstance(resolved, ActionResult):
         return resolved

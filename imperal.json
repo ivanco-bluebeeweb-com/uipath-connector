@@ -4541,7 +4541,9 @@
       "description": "Enable or disable a Process Schedule (Trigger) without deleting it.",
       "action_type": "write",
       "chain_callable": true,
-      "effects": [],
+      "effects": [
+        "update:uipath_schedule"
+      ],
       "id_projection": "",
       "params_schema": {
         "properties": {
@@ -4671,7 +4673,9 @@
       "description": "Run a Process Schedule (Trigger) right now, regardless of its cron timing.",
       "action_type": "write",
       "chain_callable": true,
-      "effects": [],
+      "effects": [
+        "create:uipath_job"
+      ],
       "id_projection": "",
       "params_schema": {
         "properties": {
@@ -5402,7 +5406,9 @@
       "description": "Create a new Webhook subscription: Orchestrator will POST events to your URL as they happen (e.g. job.completed, job.faulted) instead of you having to poll.",
       "action_type": "write",
       "chain_callable": true,
-      "effects": [],
+      "effects": [
+        "create:uipath_webhook"
+      ],
       "id_projection": "",
       "params_schema": {
         "properties": {
@@ -5523,7 +5529,9 @@
       "description": "Permanently remove a Webhook subscription. Cannot be undone.",
       "action_type": "write",
       "chain_callable": true,
-      "effects": [],
+      "effects": [
+        "delete:uipath_webhook"
+      ],
       "id_projection": "",
       "params_schema": {
         "properties": {
