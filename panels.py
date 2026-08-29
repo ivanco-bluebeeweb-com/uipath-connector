@@ -176,6 +176,9 @@ async def uipath_connect_panel(ctx, **kwargs) -> object:
         ui.Text(f"Processes -- {first.get('label') or first.get('organization_name', '')}", variant="subtitle"),
         _processes_section(processes),
         ui.Divider(),
+        ui.Button("View folder dashboard", variant="primary", size="sm", full_width=True,
+                  icon="LayoutDashboard", on_click=ui.Call("__panel__uipath_center")),
+        ui.Divider(),
         _settings_button(),
     ])
 
@@ -216,14 +219,46 @@ async def uipath_connect_help(ctx, **kwargs) -> object:
 
 @ext.panel("uipath_center", slot="center", title="UiPath", icon="🤖", center_overlay=True)
 async def uipath_center_panel(ctx, **kwargs) -> object:
-    """Base center panel -- per UI_INTERFACE_STANDARD.md (2026-08-20).
-    This app has no list/detail content of its own to show in the center
-    by default (everything lives in the sidebar). MUST carry
-    center_overlay=True: per docs.imperal.io/en/concepts/panels, a plain
-    slot="center" panel is registered but the Panel app never fetches it
-    at session-init without that flag. Text is the shared canonical
-    wording -- must stay identical across every app in this situation."""
-    return ui.Empty(
-        message="Nothing to show here -- this app is managed entirely from the sidebar.",
-        icon="👈",
-    )
+    """Post-connect main screen: a folder audit (process/job health)
+    plus recent jobs -- gives a real operational picture instead of the
+    previous empty placeholder."""
+    connections = await h._load_connections(ctx)
+    if not connections:
+        return ui.Empty(message="Connect a UiPath organization from the sidebar to see it here.", icon="🤖")
+
+    from schemas import AuditFolderParams, ListJobsParams
+    conn_id = connections[0].get("id", "")
+    body: list[ui.UINode] = [ui.Text("Folder audit", variant="subtitle")]
+    audit_result = await h.audit_folder(ctx, AuditFolderParams(connection_id=conn_id))
+    if audit_result.success and audit_result.data:
+        r = audit_result.data
+        body.append(ui.Stats(children=[
+            ui.Stat(label="Processes", value=str(r.total_processes)),
+            ui.Stat(label="Running jobs", value=str(r.total_running_jobs)),
+            ui.Stat(label="Faulted (24h)", value=str(r.total_faulted_24h)),
+        ]))
+        for row in r.items[:15]:
+            color = "red" if row.faulted_jobs_24h > 0 else ("green" if row.running_jobs > 0 else "gray")
+            body.append(ui.Stack(direction="h", gap=2, align="center", children=[
+                ui.Badge(label=f"{row.running_jobs} running", color=color),
+                ui.Text(row.title, variant="body"),
+                ui.Text(f"faulted 24h: {row.faulted_jobs_24h}", variant="caption"),
+            ]))
+    else:
+        body.append(ui.Text("Could not load the folder audit.", variant="caption"))
+
+    body.append(ui.Divider())
+    body.append(ui.Text("Recent jobs", variant="subtitle"))
+    jobs_result = await h.list_jobs(ctx, ListJobsParams(connection_id=conn_id))
+    if jobs_result.success and jobs_result.data and jobs_result.data.items:
+        for job in jobs_result.data.items[:15]:
+            color = {"Faulted": "red", "Successful": "green", "Running": "blue"}.get(job.state, "gray")
+            body.append(ui.Stack(direction="h", gap=2, align="center", children=[
+                ui.Badge(label=job.state or "—", color=color),
+                ui.Text(job.title or job.process_key, variant="body"),
+                ui.Text(job.robot_name or "—", variant="caption"),
+            ]))
+    else:
+        body.append(ui.Text("No recent jobs.", variant="caption"))
+
+    return ui.Stack(direction="v", gap=3, align="stretch", children=body)
