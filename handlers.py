@@ -89,8 +89,40 @@ async def _resolve_connection(ctx, connection_id: str) -> dict | None:
     return None
 
 
+_TOKEN_CACHE = "uipath_token_cache"
+
+
+async def _cached_token(ctx, conn_id: str) -> str:
+    import time as _time
+    page = await ctx.store.query(_TOKEN_CACHE, where={"connection_id": conn_id}, limit=1)
+    if not page.data:
+        return ""
+    doc = page.data[0].data
+    if int(doc.get("expires_at", 0)) <= int(_time.time()):
+        return ""
+    return doc.get("access_token", "")
+
+
+async def _store_token(ctx, conn_id: str, access_token: str, expires_in: int) -> None:
+    import time as _time
+    page = await ctx.store.query(_TOKEN_CACHE, where={"connection_id": conn_id}, limit=1)
+    doc = {
+        "connection_id": conn_id,
+        "access_token": access_token,
+        "expires_at": int(_time.time()) + max(int(expires_in or 3600) - 60, 60),
+    }
+    if page.data:
+        await ctx.store.update(_TOKEN_CACHE, page.data[0].id, doc)
+    else:
+        await ctx.store.create(_TOKEN_CACHE, doc)
+
+
 async def _get_token_and_conn(ctx, connection_id: str, folder_id_override: str = ""):
-    """Resolve the connection, mint an access token, and return
+    """Resolve the connection, reuse a cached access token when still fresh
+    (see AUTH_AND_CREDENTIALS_STANDARD.md Part B3 -- UiPath Identity Server's
+    client-credentials token endpoint returns a real expires_in, so re-minting
+    a token on every single tool call is unnecessary and risks the token
+    endpoint's own rate limit during bulk operations), and return
     (conn, access_token, folder_id) or an ActionResult.error to return
     directly from the calling handler."""
     conn = await _resolve_connection(ctx, connection_id)
@@ -99,11 +131,17 @@ async def _get_token_and_conn(ctx, connection_id: str, folder_id_override: str =
         if not connections:
             return ActionResult.error("No UiPath organization connected yet. Use connect_uipath first.", code="UIPATH_NOT_CONNECTED")
         return ActionResult.error("Multiple organizations connected -- please specify connection_id.", code="UIPATH_AMBIGUOUS_CONNECTION")
-    tok = await uc.get_access_token(ctx, conn["client_id"], conn["client_secret"])
-    if not tok.get("ok"):
-        return ActionResult.error(tok.get("error", "Could not authenticate with UiPath."), code=tok.get("error_code", "UIPATH_AUTH_FAILED"))
+    conn_id = conn.get("id", "")
+    access_token = await _cached_token(ctx, conn_id) if conn_id else ""
+    if not access_token:
+        tok = await uc.get_access_token(ctx, conn["client_id"], conn["client_secret"])
+        if not tok.get("ok"):
+            return ActionResult.error(tok.get("error", "Could not authenticate with UiPath."), code=tok.get("error_code", "UIPATH_AUTH_FAILED"))
+        access_token = tok["access_token"]
+        if conn_id:
+            await _store_token(ctx, conn_id, access_token, tok.get("expires_in", 3600))
     folder_id = folder_id_override or conn.get("default_folder_id", "")
-    return conn, tok["access_token"], folder_id
+    return conn, access_token, folder_id
 
 
 @chat.function(
