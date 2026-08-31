@@ -201,7 +201,7 @@ async def connect_uipath(ctx, params: ConnectUipathParams) -> ActionResult:
         }
         connections.append(record)
     await _save_connections(ctx, connections)
-    return ActionResult.success(_to_provider_connection(record), message=f"Connected UiPath organization '{organization_name}/{tenant_name}'."), summary="Uipath connected."
+    return ActionResult.success(_to_provider_connection(record), message=f"Connected UiPath organization '{organization_name}/{tenant_name}'.", summary="Uipath connected.")
 
 
 @chat.function(
@@ -216,7 +216,7 @@ async def list_connections(ctx, params: NoParams) -> ActionResult:
     """List the connected UiPath Automation Cloud organizations/tenants."""
     connections = await _load_connections(ctx)
     items = [_to_provider_connection(c) for c in connections]
-    return ActionResult.success(ProviderConnectionList(title="UiPath connections", items=items)), summary="Connections listed."
+    return ActionResult.success(ProviderConnectionList(title="UiPath connections", items=items), summary="Connections listed.")
 
 
 @chat.function(
@@ -237,7 +237,7 @@ async def disconnect_uipath(ctx, params: DisconnectUipathParams) -> ActionResult
     if len(remaining) == len(connections):
         return ActionResult.error("Connection not found.", code="UIPATH_NOT_FOUND")
     await _save_connections(ctx, remaining)
-    return ActionResult.success(DeleteResult(id=params.connection_id, title="Disconnected", ok=True), message="UiPath organization disconnected."), summary="Uipath disconnected."
+    return ActionResult.success(DeleteResult(id=params.connection_id, title="Disconnected", ok=True), message="UiPath organization disconnected.", summary="Uipath disconnected.")
 
 
 # ──────────────────────────────────────────────────────────────────────────
@@ -272,7 +272,7 @@ async def list_processes(ctx, params: ListProcessesParams) -> ActionResult:
         for p in raw
         if not params.search or params.search.lower() in p.get("Name", "").lower()
     ]
-    return ActionResult.success(OrchestratorProcessList(title="Processes", items=items)), summary="Processes listed."
+    return ActionResult.success(OrchestratorProcessList(title="Processes", items=items), summary="Processes listed.")
 
 
 @chat.function(
@@ -297,7 +297,7 @@ async def get_process(ctx, params: GetProcessParams) -> ActionResult:
         id=str(p.get("Id", "")), title=p.get("Name", ""),
         key=p.get("Key", ""), version=p.get("ProcessVersion", ""),
         process_key=p.get("ProcessKey", ""), description=p.get("Description", "") or "",
-    )), summary="Process retrieved."
+    ), summary="Process retrieved.")
 
 
 # ──────────────────────────────────────────────────────────────────────────
@@ -333,7 +333,7 @@ async def list_jobs(ctx, params: ListJobsParams) -> ActionResult:
         )
         for j in raw
     ]
-    return ActionResult.success(OrchestratorJobList(title="Jobs", items=items)), summary="Jobs listed."
+    return ActionResult.success(OrchestratorJobList(title="Jobs", items=items), summary="Jobs listed.")
 
 
 @chat.function(
@@ -360,7 +360,7 @@ async def get_job(ctx, params: GetJobParams) -> ActionResult:
         robot_name=(j.get("Robot", {}) or {}).get("Name", "") if isinstance(j.get("Robot"), dict) else "",
         start_time=j.get("StartTime", "") or "", end_time=j.get("EndTime", "") or "",
         info=j.get("Info", "") or "",
-    )), summary="Job retrieved."
+    ), summary="Job retrieved.")
 
 
 @chat.function(
@@ -393,7 +393,8 @@ async def start_job(ctx, params: StartJobParams) -> ActionResult:
     return ActionResult.success(
         JobActionResult(id=params.process_key, title="Job started", ok=True, detail=f"{len(started)} job(s) started."),
         message=f"Started {len(started)} job(s) for process '{params.process_key}'.",
-    ), summary="Job start requested."
+        summary="Job start requested.",
+    )
 
 
 @chat.function(
@@ -417,7 +418,7 @@ async def stop_job(ctx, params: StopJobParams) -> ActionResult:
         await uc.stop_job(ctx, token, conn["organization_name"], conn["tenant_name"], folder_id, params.job_id, params.strategy)
     except uc.ClientFail as e:
         return ActionResult.error(e.payload.get("error", "Failed to stop job."), code=e.payload.get("error_code", "UIPATH_ERROR"))
-    return ActionResult.success(JobActionResult(id=params.job_id, title="Job stop requested", ok=True, detail=params.strategy), message=f"Requested {params.strategy} for job {params.job_id}."), summary="Job stop requested."
+    return ActionResult.success(JobActionResult(id=params.job_id, title="Job stop requested", ok=True, detail=params.strategy), message=f"Requested {params.strategy} for job {params.job_id}.", summary="Job stop requested.")
 
 
 # ──────────────────────────────────────────────────────────────────────────
@@ -452,7 +453,7 @@ async def list_queues(ctx, params: ListQueuesParams) -> ActionResult:
         )
         for q in raw
     ]
-    return ActionResult.success(OrchestratorQueueList(title="Queues", items=items)), summary="Queues listed."
+    return ActionResult.success(OrchestratorQueueList(title="Queues", items=items), summary="Queues listed.")
 
 
 @chat.function(
@@ -485,7 +486,7 @@ async def list_queue_items(ctx, params: ListQueueItemsParams) -> ActionResult:
         for i in raw
         if not params.status or i.get("Status", "") == params.status
     ]
-    return ActionResult.success(QueueItemList(title=f"Queue items -- {params.queue_name}", items=items)), summary="Queue items listed."
+    return ActionResult.success(QueueItemList(title=f"Queue items -- {params.queue_name}", items=items), summary="Queue items listed.")
 
 
 @chat.function(
@@ -516,7 +517,8 @@ async def add_queue_item(ctx, params: AddQueueItemParams) -> ActionResult:
     return ActionResult.success(
         QueueItem(id=str(result.get("Id", "")), title=params.reference or str(result.get("Id", "")), queue_name=params.queue_name, status=result.get("Status", "New"), priority=params.priority, reference=params.reference),
         message=f"Added item to queue '{params.queue_name}'.",
-    ), summary="Queue item created."
+        summary="Queue item created.",
+    )
 
 
 @chat.function(
@@ -538,7 +540,7 @@ async def set_queue_item_status(ctx, params: SetQueueItemStatusParams) -> Action
         await uc.set_queue_item_status(ctx, token, conn["organization_name"], conn["tenant_name"], folder_id, params.queue_item_id, params.status)
     except uc.ClientFail as e:
         return ActionResult.error(e.payload.get("error", "Failed to update queue item."), code=e.payload.get("error_code", "UIPATH_ERROR"))
-    return ActionResult.success(JobActionResult(id=params.queue_item_id, title="Queue item updated", ok=True, detail=params.status), message=f"Queue item {params.queue_item_id} marked {params.status}."), summary="Queue item status updated."
+    return ActionResult.success(JobActionResult(id=params.queue_item_id, title="Queue item updated", ok=True, detail=params.status), message=f"Queue item {params.queue_item_id} marked {params.status}.", summary="Queue item status updated.")
 
 
 # ──────────────────────────────────────────────────────────────────────────
@@ -572,7 +574,7 @@ async def list_robots(ctx, params: ListRobotsParams) -> ActionResult:
         )
         for r in raw
     ]
-    return ActionResult.success(OrchestratorRobotList(title="Robots", items=items)), summary="Robots listed."
+    return ActionResult.success(OrchestratorRobotList(title="Robots", items=items), summary="Robots listed.")
 
 
 # ──────────────────────────────────────────────────────────────────────────
@@ -607,7 +609,7 @@ async def list_assets(ctx, params: ListAssetsParams) -> ActionResult:
         )
         for a in raw
     ]
-    return ActionResult.success(OrchestratorAssetList(title="Assets", items=items)), summary="Assets listed."
+    return ActionResult.success(OrchestratorAssetList(title="Assets", items=items), summary="Assets listed.")
 
 
 @chat.function(
@@ -636,7 +638,7 @@ async def get_asset(ctx, params: GetAssetParams) -> ActionResult:
         value_type=match.get("ValueType", "") or "",
         value=(match.get("StringValue") or match.get("Value") or "") if match.get("ValueType") != "Credential" else "***",
         description=match.get("Description", "") or "",
-    )), summary="Asset retrieved."
+    ), summary="Asset retrieved.")
 
 
 @chat.function(
@@ -665,7 +667,7 @@ async def set_asset_value(ctx, params: SetAssetValueParams) -> ActionResult:
         await uc.set_asset_value(ctx, token, conn["organization_name"], conn["tenant_name"], folder_id, str(match.get("Id")), params.value)
     except uc.ClientFail as e:
         return ActionResult.error(e.payload.get("error", "Failed to update asset."), code=e.payload.get("error_code", "UIPATH_ERROR"))
-    return ActionResult.success(JobActionResult(id=params.asset_name, title="Asset updated", ok=True, detail=""), message=f"Asset '{params.asset_name}' updated."), summary="Asset value updated."
+    return ActionResult.success(JobActionResult(id=params.asset_name, title="Asset updated", ok=True, detail=""), message=f"Asset '{params.asset_name}' updated.", summary="Asset value updated.")
 
 
 # ──────────────────────────────────────────────────────────────────────────
@@ -698,7 +700,8 @@ async def bulk_stop_jobs(ctx, params: BulkJobIdsParams) -> ActionResult:
     return ActionResult.success(
         BulkJobResult(title="Bulk stop jobs", items=items, succeeded=succeeded, failed=len(items) - succeeded),
         message=f"Stopped {succeeded}/{len(items)} job(s).",
-    ), summary="Bulk stop jobs done."
+        summary="Bulk stop jobs done.",
+    )
 
 
 @chat.function(
@@ -752,7 +755,7 @@ async def audit_folder(ctx, params: AuditFolderParams) -> ActionResult:
     return ActionResult.success(FolderAuditReport(
         title="Folder audit", items=rows,
         total_processes=len(rows), total_running_jobs=total_running, total_faulted_24h=total_faulted,
-    )), summary="Folder audit ready."
+    ), summary="Folder audit ready.")
 
 
 @chat.function(
@@ -774,7 +777,7 @@ async def list_folders(ctx, params: ListFoldersParams) -> ActionResult:
     except uc.ClientFail as e:
         return ActionResult.error(e.payload.get("error", "Failed to list folders."), code=e.payload.get("error_code", "UIPATH_ERROR"))
     items = [OrchestratorFolder(id=str(f.get("Id", "")), title=f.get("DisplayName", ""), fully_qualified_name=f.get("FullyQualifiedName", ""), description=f.get("Description", "") or "", folder_type=f.get("FolderType", "")) for f in raw]
-    return ActionResult.success(OrchestratorFolderList(title="Orchestrator folders", items=items)), summary="Folders listed."
+    return ActionResult.success(OrchestratorFolderList(title="Orchestrator folders", items=items), summary="Folders listed.")
 
 
 @chat.function(
@@ -795,7 +798,7 @@ async def get_folder(ctx, params: GetFolderParams) -> ActionResult:
         f = await uc.get_folder(ctx, token, conn["organization_name"], conn["tenant_name"], params.folder_id)
     except uc.ClientFail as e:
         return ActionResult.error(e.payload.get("error", "Failed to get folder."), code=e.payload.get("error_code", "UIPATH_ERROR"))
-    return ActionResult.success(OrchestratorFolder(id=str(f.get("Id", "")), title=f.get("DisplayName", ""), fully_qualified_name=f.get("FullyQualifiedName", ""), description=f.get("Description", "") or "", folder_type=f.get("FolderType", ""))), summary="Folder retrieved."
+    return ActionResult.success(OrchestratorFolder(id=str(f.get("Id", "")), title=f.get("DisplayName", ""), fully_qualified_name=f.get("FullyQualifiedName", ""), description=f.get("Description", "") or "", folder_type=f.get("FolderType", "")), summary="Folder retrieved.")
 
 
 @chat.function(
@@ -817,7 +820,7 @@ async def list_machines(ctx, params: ListMachinesParams) -> ActionResult:
     except uc.ClientFail as e:
         return ActionResult.error(e.payload.get("error", "Failed to list machines."), code=e.payload.get("error_code", "UIPATH_ERROR"))
     items = [OrchestratorMachine(id=str(m.get("Id", "")), title=m.get("Name", ""), machine_type=m.get("Type", ""), non_production_slots=m.get("NonProductionSlots", 0) or 0, unattended_slots=m.get("UnattendedSlots", 0) or 0) for m in raw]
-    return ActionResult.success(OrchestratorMachineList(title="Orchestrator machines", items=items)), summary="Machines listed."
+    return ActionResult.success(OrchestratorMachineList(title="Orchestrator machines", items=items), summary="Machines listed.")
 
 
 @chat.function(
@@ -838,7 +841,7 @@ async def get_machine(ctx, params: GetMachineParams) -> ActionResult:
         m = await uc.get_machine(ctx, token, conn["organization_name"], conn["tenant_name"], folder_id, params.machine_id)
     except uc.ClientFail as e:
         return ActionResult.error(e.payload.get("error", "Failed to get machine."), code=e.payload.get("error_code", "UIPATH_ERROR"))
-    return ActionResult.success(OrchestratorMachine(id=str(m.get("Id", "")), title=m.get("Name", ""), machine_type=m.get("Type", ""), non_production_slots=m.get("NonProductionSlots", 0) or 0, unattended_slots=m.get("UnattendedSlots", 0) or 0)), summary="Machine retrieved."
+    return ActionResult.success(OrchestratorMachine(id=str(m.get("Id", "")), title=m.get("Name", ""), machine_type=m.get("Type", ""), non_production_slots=m.get("NonProductionSlots", 0) or 0, unattended_slots=m.get("UnattendedSlots", 0) or 0), summary="Machine retrieved.")
 
 
 @chat.function(
@@ -860,7 +863,7 @@ async def list_environments(ctx, params: ListEnvironmentsParams) -> ActionResult
     except uc.ClientFail as e:
         return ActionResult.error(e.payload.get("error", "Failed to list environments."), code=e.payload.get("error_code", "UIPATH_ERROR"))
     items = [OrchestratorEnvironment(id=str(e_.get("Id", "")), title=e_.get("Name", ""), description=e_.get("Description", "") or "") for e_ in raw]
-    return ActionResult.success(OrchestratorEnvironmentList(title="Orchestrator environments", items=items)), summary="Environments listed."
+    return ActionResult.success(OrchestratorEnvironmentList(title="Orchestrator environments", items=items), summary="Environments listed.")
 
 
 @chat.function(
@@ -882,7 +885,7 @@ async def list_libraries(ctx, params: ListLibrariesParams) -> ActionResult:
     except uc.ClientFail as e:
         return ActionResult.error(e.payload.get("error", "Failed to list libraries."), code=e.payload.get("error_code", "UIPATH_ERROR"))
     items = [OrchestratorLibrary(id=str(l.get("Id", "")), title=l.get("Title", "") or l.get("Name", ""), version=l.get("Version", ""), description=l.get("Description", "") or "") for l in raw]
-    return ActionResult.success(OrchestratorLibraryList(title="Orchestrator libraries", items=items)), summary="Libraries listed."
+    return ActionResult.success(OrchestratorLibraryList(title="Orchestrator libraries", items=items), summary="Libraries listed.")
 
 
 @chat.function(
@@ -906,7 +909,7 @@ async def get_library(ctx, params: GetLibraryParams) -> ActionResult:
     match = next((l for l in raw if str(l.get("Id", "")) == params.library_id), None)
     if not match:
         return ActionResult.error("Library not found.", code="UIPATH_NOT_FOUND")
-    return ActionResult.success(OrchestratorLibrary(id=str(match.get("Id", "")), title=match.get("Title", "") or match.get("Name", ""), version=match.get("Version", ""), description=match.get("Description", "") or "")), summary="Library retrieved."
+    return ActionResult.success(OrchestratorLibrary(id=str(match.get("Id", "")), title=match.get("Title", "") or match.get("Name", ""), version=match.get("Version", ""), description=match.get("Description", "") or ""), summary="Library retrieved.")
 
 
 @chat.function(
@@ -928,7 +931,7 @@ async def list_schedules(ctx, params: ListSchedulesParams) -> ActionResult:
     except uc.ClientFail as e:
         return ActionResult.error(e.payload.get("error", "Failed to list schedules."), code=e.payload.get("error_code", "UIPATH_ERROR"))
     items = [OrchestratorSchedule(id=str(s.get("Id", "")), title=s.get("Name", ""), enabled=bool(s.get("Enabled", False)), cron_expression=(s.get("StartProcessCron", "") or ""), process_key=((s.get("StartProcess") or {}).get("ProcessKey", "") if isinstance(s.get("StartProcess"), dict) else "")) for s in raw]
-    return ActionResult.success(OrchestratorScheduleList(title="Orchestrator schedules", items=items)), summary="Schedules listed."
+    return ActionResult.success(OrchestratorScheduleList(title="Orchestrator schedules", items=items), summary="Schedules listed.")
 
 
 @chat.function(
@@ -949,7 +952,7 @@ async def get_schedule(ctx, params: GetScheduleParams) -> ActionResult:
         s = await uc.get_schedule(ctx, token, conn["organization_name"], conn["tenant_name"], folder_id, params.schedule_id)
     except uc.ClientFail as e:
         return ActionResult.error(e.payload.get("error", "Failed to get schedule."), code=e.payload.get("error_code", "UIPATH_ERROR"))
-    return ActionResult.success(OrchestratorSchedule(id=str(s.get("Id", "")), title=s.get("Name", ""), enabled=bool(s.get("Enabled", False)), cron_expression=(s.get("StartProcessCron", "") or ""), process_key=((s.get("StartProcess") or {}).get("ProcessKey", "") if isinstance(s.get("StartProcess"), dict) else ""))), summary="Schedule retrieved."
+    return ActionResult.success(OrchestratorSchedule(id=str(s.get("Id", "")), title=s.get("Name", ""), enabled=bool(s.get("Enabled", False)), cron_expression=(s.get("StartProcessCron", "") or ""), process_key=((s.get("StartProcess") or {}).get("ProcessKey", "") if isinstance(s.get("StartProcess"), dict) else "")), summary="Schedule retrieved.")
 
 
 @chat.function(
@@ -971,7 +974,7 @@ async def set_schedule_enabled(ctx, params: SetScheduleEnabledParams) -> ActionR
         s = await uc.set_schedule_enabled(ctx, token, conn["organization_name"], conn["tenant_name"], folder_id, params.schedule_id, params.enabled)
     except uc.ClientFail as e:
         return ActionResult.error(e.payload.get("error", "Failed to update schedule."), code=e.payload.get("error_code", "UIPATH_ERROR"))
-    return ActionResult.success(OrchestratorSchedule(id=params.schedule_id, title=s.get("Name", ""), enabled=params.enabled, cron_expression=(s.get("StartProcessCron", "") or ""), process_key=""), message=f"Schedule {'enabled' if params.enabled else 'disabled'}."), summary="Schedule enabled updated."
+    return ActionResult.success(OrchestratorSchedule(id=params.schedule_id, title=s.get("Name", ""), enabled=params.enabled, cron_expression=(s.get("StartProcessCron", "") or ""), process_key=""), message=f"Schedule {'enabled' if params.enabled else 'disabled'}.", summary="Schedule enabled updated.")
 
 
 @chat.function(
@@ -993,7 +996,7 @@ async def run_schedule(ctx, params: RunScheduleParams) -> ActionResult:
         await uc.run_schedule_now(ctx, token, conn["organization_name"], conn["tenant_name"], folder_id, params.schedule_id)
     except uc.ClientFail as e:
         return ActionResult.error(e.payload.get("error", "Failed to run schedule."), code=e.payload.get("error_code", "UIPATH_ERROR"))
-    return ActionResult.success(NoParams(), message="Schedule triggered."), summary="Schedule run requested."
+    return ActionResult.success(NoParams(), message="Schedule triggered.", summary="Schedule run requested.")
 
 
 @chat.function(
@@ -1015,7 +1018,7 @@ async def list_buckets(ctx, params: ListBucketsParams) -> ActionResult:
     except uc.ClientFail as e:
         return ActionResult.error(e.payload.get("error", "Failed to list buckets."), code=e.payload.get("error_code", "UIPATH_ERROR"))
     items = [OrchestratorBucket(id=str(b.get("Id", "")), title=b.get("Name", ""), description=b.get("Description", "") or "", identifier=b.get("Identifier", "") or "") for b in raw]
-    return ActionResult.success(OrchestratorBucketList(title="Orchestrator buckets", items=items)), summary="Buckets listed."
+    return ActionResult.success(OrchestratorBucketList(title="Orchestrator buckets", items=items), summary="Buckets listed.")
 
 
 @chat.function(
@@ -1037,7 +1040,7 @@ async def list_bucket_files(ctx, params: ListBucketFilesParams) -> ActionResult:
     except uc.ClientFail as e:
         return ActionResult.error(e.payload.get("error", "Failed to list bucket files."), code=e.payload.get("error_code", "UIPATH_ERROR"))
     items = [BucketFile(id=f.get("FullPath", ""), title=f.get("Name", "") or f.get("FullPath", ""), full_path=f.get("FullPath", ""), content_type=f.get("ContentType", "") or "", size=f.get("Size", 0) or 0) for f in raw]
-    return ActionResult.success(BucketFileList(title="Bucket files", items=items)), summary="Bucket files listed."
+    return ActionResult.success(BucketFileList(title="Bucket files", items=items), summary="Bucket files listed.")
 
 
 @chat.function(
@@ -1058,7 +1061,7 @@ async def get_bucket_file_read_uri(ctx, params: GetBucketFileReadUriParams) -> A
         r = await uc.get_bucket_file_read_uri(ctx, token, conn["organization_name"], conn["tenant_name"], folder_id, params.bucket_id, params.path, params.expiry_minutes)
     except uc.ClientFail as e:
         return ActionResult.error(e.payload.get("error", "Failed to get file read URI."), code=e.payload.get("error_code", "UIPATH_ERROR"))
-    return ActionResult.success(BucketFileReadUri(url=r.get("Uri", "") or r.get("BlobToken", {}).get("Uri", "") if isinstance(r, dict) else "", expires_in_minutes=params.expiry_minutes)), summary="Bucket file read uri retrieved."
+    return ActionResult.success(BucketFileReadUri(url=r.get("Uri", "") or r.get("BlobToken", {}).get("Uri", "") if isinstance(r, dict) else "", expires_in_minutes=params.expiry_minutes), summary="Bucket file read uri retrieved.")
 
 
 @chat.function(
@@ -1080,7 +1083,7 @@ async def list_webhooks(ctx, params: ListWebhooksParams) -> ActionResult:
     except uc.ClientFail as e:
         return ActionResult.error(e.payload.get("error", "Failed to list webhooks."), code=e.payload.get("error_code", "UIPATH_ERROR"))
     items = [OrchestratorWebhook(id=str(w.get("Id", "")), title=w.get("Name", "") or w.get("Url", ""), url=w.get("Url", ""), enabled=bool(w.get("Enabled", False))) for w in raw]
-    return ActionResult.success(OrchestratorWebhookList(title="Orchestrator webhooks", items=items)), summary="Webhooks listed."
+    return ActionResult.success(OrchestratorWebhookList(title="Orchestrator webhooks", items=items), summary="Webhooks listed.")
 
 
 @chat.function(
@@ -1103,7 +1106,7 @@ async def create_webhook(ctx, params: CreateWebhookParams) -> ActionResult:
         w = await uc.create_webhook(ctx, token, conn["organization_name"], conn["tenant_name"], folder_id, url=params.url, events=params.events, secret=params.secret)
     except uc.ClientFail as e:
         return ActionResult.error(e.payload.get("error", "Failed to create webhook."), code=e.payload.get("error_code", "UIPATH_ERROR"))
-    return ActionResult.success(OrchestratorWebhook(id=str(w.get("Id", "")), title=w.get("Name", "") or w.get("Url", ""), url=w.get("Url", ""), enabled=bool(w.get("Enabled", False))), message="Webhook created."), summary="Webhook created."
+    return ActionResult.success(OrchestratorWebhook(id=str(w.get("Id", "")), title=w.get("Name", "") or w.get("Url", ""), url=w.get("Url", ""), enabled=bool(w.get("Enabled", False))), message="Webhook created.", summary="Webhook created.")
 
 
 @chat.function(
@@ -1125,7 +1128,7 @@ async def delete_webhook(ctx, params: DeleteWebhookParams) -> ActionResult:
         await uc.delete_webhook(ctx, token, conn["organization_name"], conn["tenant_name"], folder_id, params.webhook_id)
     except uc.ClientFail as e:
         return ActionResult.error(e.payload.get("error", "Failed to delete webhook."), code=e.payload.get("error_code", "UIPATH_ERROR"))
-    return ActionResult.success(DeleteResult(deleted=True), message="Webhook deleted."), summary="Webhook deleted."
+    return ActionResult.success(DeleteResult(deleted=True), message="Webhook deleted.", summary="Webhook deleted.")
 
 
 @chat.function(
@@ -1147,7 +1150,7 @@ async def list_users(ctx, params: ListUsersParams) -> ActionResult:
     except uc.ClientFail as e:
         return ActionResult.error(e.payload.get("error", "Failed to list users."), code=e.payload.get("error_code", "UIPATH_ERROR"))
     items = [OrchestratorUser(id=str(u.get("Id", "")), title=u.get("Name", "") or u.get("UserName", ""), username=u.get("UserName", ""), email=u.get("Email", "") or "", is_active=not bool(u.get("IsDisabled", False))) for u in raw]
-    return ActionResult.success(OrchestratorUserList(title="Orchestrator users", items=items)), summary="Users listed."
+    return ActionResult.success(OrchestratorUserList(title="Orchestrator users", items=items), summary="Users listed.")
 
 
 @chat.function(
@@ -1169,4 +1172,4 @@ async def list_audit_logs(ctx, params: ListAuditLogsParams) -> ActionResult:
     except uc.ClientFail as e:
         return ActionResult.error(e.payload.get("error", "Failed to list audit logs."), code=e.payload.get("error_code", "UIPATH_ERROR"))
     items = [OrchestratorAuditLogEntry(id=str(a.get("Id", "")), title=(str(a.get("Component", "") or "") + ": " + str(a.get("Action", "") or "")), component=a.get("Component", "") or "", action=a.get("Action", "") or "", execution_time=a.get("ExecutionTime", "") or "", user_name=a.get("User", "") or "") for a in raw]
-    return ActionResult.success(OrchestratorAuditLogList(title="Orchestrator audit logs", items=items)), summary="Audit logs listed."
+    return ActionResult.success(OrchestratorAuditLogList(title="Orchestrator audit logs", items=items), summary="Audit logs listed.")
