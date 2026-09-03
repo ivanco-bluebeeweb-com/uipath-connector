@@ -43,8 +43,7 @@ def _settings_button() -> ui.UINode:
     """The one required secondary entry point into the settings screen --
     always the last element at the bottom of the sidebar."""
     return ui.Button(
-        "App settings", variant="secondary", size="sm", full_width=True,
-        icon="settings", on_click=ui.Call("__panel__uipath_settings"),
+        "App settings", variant="secondary", size="sm", icon="settings", on_click=ui.Call("__panel__uipath_settings"),
     )
 
 
@@ -97,6 +96,9 @@ def _connect_section() -> ui.UINode:
         ui.Button("How do I set this up?", variant="ghost", size="sm",
                   icon="HelpCircle",
                   on_click=ui.Call("__panel__uipath_connect_help")),
+        ui.Button("Sign in with UiPath (OAuth 2.0 / SSO)", variant="primary", size="sm", icon="login"),
+        ui.Divider(),
+        ui.Text("Or connect via External App Client Credentials", variant="caption"),
         ui.Form(
             action="connect_uipath",
             submit_label="Verify and connect",
@@ -176,8 +178,7 @@ async def uipath_connect_panel(ctx, **kwargs) -> object:
         ui.Text(f"Processes -- {first.get('label') or first.get('organization_name', '')}", variant="subtitle"),
         _processes_section(processes),
         ui.Divider(),
-        ui.Button("View folder dashboard", variant="primary", size="sm", full_width=True,
-                  icon="LayoutDashboard", on_click=ui.Call("__panel__uipath_center")),
+        ui.Button("View folder dashboard", variant="primary", size="sm", icon="LayoutDashboard", on_click=ui.Call("__panel__uipath_center")),
         ui.Divider(),
         _settings_button(),
     ])
