@@ -6,11 +6,11 @@
   "get_process": 8,
   "list_jobs": 8,
   "get_job": 8,
-  "start_job": 20,
+  "start_job": 16,
   "stop_job": 16,
   "list_queues": 8,
   "list_queue_items": 8,
-  "add_queue_item": 16,
+  "add_queue_item": 8,
   "set_queue_item_status": 16,
   "list_robots": 8,
   "list_assets": 8,
@@ -36,5 +36,5 @@
   "create_webhook": 16,
   "delete_webhook": 16,
   "list_users": 8,
-  "list_audit_logs": 8
+  "list_audit_logs": 40
 }
